@@ -4,10 +4,14 @@ import reductionalgorithm.GUI.dialog.ChangeParametersDialog;
 import reductionalgorithm.GUI.entity.Config;
 import reductionalgorithm.GUI.entity.ExportMatrix;
 import reductionalgorithm.GUI.entity.Matrix;
+import reductionalgorithm.GUI.entity.Result;
 import reductionalgorithm.GUI.windows.ChangeMatrixWindow;
 import reductionalgorithm.GUI.windows.MainWindows;
+import reductionalgorithm.GUI.windows.ShowResultWindows;
+import reductionalgorithm.GUI.windows.WelcomeWindow;
 
 import javax.swing.*;
+import java.util.Map;
 
 public class MainService extends AbstractService{
     public String exportMatrix(Matrix matrix){
@@ -30,5 +34,14 @@ public class MainService extends AbstractService{
     public void changeMatrix(Matrix matrix){
         ChangeMatrixWindow changeMatrixWindow=new ChangeMatrixWindow(matrix,(MainWindows)this.getWindow());
         changeMatrixWindow.openWindow();
+    }
+    public void showResult(Result result, Map<Integer, Map<Integer,double[]>> AllAlgorithmResult){
+        ShowResultWindows resultWindows=new ShowResultWindows(result,AllAlgorithmResult);
+        resultWindows.openWindow();
+    }
+    public void ReStart(MainWindows currentWindow){
+        currentWindow.closeWindow();
+        WelcomeWindow startWindow = new WelcomeWindow();
+        startWindow.openWindow();
     }
 }

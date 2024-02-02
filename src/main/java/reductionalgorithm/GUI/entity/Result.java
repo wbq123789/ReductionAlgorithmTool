@@ -16,13 +16,25 @@ public class Result {
     Matrix matrix;//矩阵数据输入
     Config config;//算法参数配置
 
-    public Result(){}
+    Map<Integer,String> Case;//各个算法在不同规模下得到的约简测试集
+
+    public Result(){
+        Case=new HashMap<>();
+    }
     public void setMatrix(Matrix matrix) {
         this.matrix = matrix;
     }
 
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    public Map<Integer, String> getCase() {
+        return Case;
+    }
+
+    public void cleanCase(){
+        Case=new HashMap<>();
     }
 
     public Map<Integer,double[]> getOneAlgorithm(Integer mode){//计算一个算法的运行结果
@@ -32,6 +44,7 @@ public class Result {
         double[] Cost=new double[Len];//测试运行代价
         double[] Err=new double[Len];//错误检测能力
         double[] Time=new double[Len];//算法运行时间
+        StringBuilder s=new StringBuilder();
         switch (mode){
             case 1:{
                 for (int i = 0; i <matrix.Matrix.size(); i++) {
@@ -43,9 +56,16 @@ public class Result {
                     ArrayList<Integer> greedyList = GreedyAlgorithm.algorithm(matrix.Matrix.get(i));
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
-                    for (Integer i1 : greedyList) {
-                        G_Cost += Case_Cost[i1];
-                        G_Err += Error_Detection[i1];
+                    s.append("M").append(i + 1).append(":");
+                    for (int i1 = 0; i1 < greedyList.size(); i1++) {
+                        G_Cost += Case_Cost[greedyList.get(i1)];
+                        G_Err += Error_Detection[greedyList.get(i1)];
+                        if (i1==0)
+                            s.append(" [").append(greedyList.get(i1)+1).append("  ");
+                        else if (i1==greedyList.size()-1)
+                            s.append(greedyList.get(i1)+1).append("]\n");
+                        else
+                            s.append(greedyList.get(i1)+1).append("  ");
                     }
                     double Reduction_situation=greedyList.size()*1.0/Case_Cost.length;//约简情况
                     Cost[i]=G_Cost;
@@ -65,9 +85,16 @@ public class Result {
                     ArrayList<Integer> HGSList = HGSAlgorithm.algorithm(matrix.Matrix.get(i));
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
-                    for (Integer i1 : HGSList) {
-                        HGS_Cost += Case_Cost[i1];
-                        HGS_Err += Error_Detection[i1];
+                    s.append("M").append(i + 1).append(":");
+                    for (int i1 = 0; i1 < HGSList.size(); i1++) {
+                        HGS_Cost += Case_Cost[HGSList.get(i1)];
+                        HGS_Err += Error_Detection[HGSList.get(i1)];
+                        if (i1==0)
+                            s.append(" [").append(HGSList.get(i1)+1).append("  ");
+                        else if (i1==HGSList.size()-1)
+                            s.append(HGSList.get(i1)+1).append("]\n");
+                        else
+                            s.append(HGSList.get(i1)+1).append("  ");
                     }
                     double Reduction_situation=HGSList.size()*1.0/Case_Cost.length;//约简情况
                     Cost[i]=HGS_Cost;
@@ -88,10 +115,17 @@ public class Result {
                 ArrayList<Integer> ACAList = acaAlgorithm.run().get(0);
                 long endTime = System.currentTimeMillis();
                 long elapsedTime = endTime - startTime;//算法运行时间
-                for (Integer i1 : ACAList) {
-                    ACA_Cost += Case_Cost[i1];
-                    ACA_Err += Error_Detection[i1];
-                    }
+                s.append("M").append(i + 1).append(":");
+                for (int i1 = 0; i1 < ACAList.size(); i1++) {
+                    ACA_Cost += Case_Cost[ACAList.get(i1)];
+                    ACA_Err += Error_Detection[ACAList.get(i1)];
+                    if (i1==0)
+                        s.append(" [").append(ACAList.get(i1)+1).append("  ");
+                    else if (i1==ACAList.size()-1)
+                        s.append(ACAList.get(i1)+1).append("]\n");
+                    else
+                        s.append(ACAList.get(i1)+1).append("  ");
+                }
                 double Reduction_situation=ACAList.size()*1.0/Case_Cost.length;//约简情况
                 Cost[i]=ACA_Cost;
                 Err[i]=ACA_Err;
@@ -111,9 +145,16 @@ public class Result {
                     ArrayList<Integer> TSR_ACAList = tsr_acaAlgorithm.run(0).get(0);
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
-                    for (Integer i1 : TSR_ACAList) {
-                        TSR_ACA_Cost += Case_Cost[i1];
-                        TSR_ACA_Err += Error_Detection[i1];
+                    s.append("M").append(i + 1).append(":");
+                    for (int i1 = 0; i1 < TSR_ACAList.size(); i1++) {
+                        TSR_ACA_Cost += Case_Cost[TSR_ACAList.get(i1)];
+                        TSR_ACA_Err += Error_Detection[TSR_ACAList.get(i1)];
+                        if (i1==0)
+                            s.append(" [").append(TSR_ACAList.get(i1)+1).append("  ");
+                        else if (i1==TSR_ACAList.size()-1)
+                            s.append(TSR_ACAList.get(i1)+1).append("]\n");
+                        else
+                            s.append(TSR_ACAList.get(i1)+1).append("  ");
                     }
                     double Reduction_situation=TSR_ACAList.size()*1.0/Case_Cost.length;//约简情况
                     Cost[i]=TSR_ACA_Cost;
@@ -134,9 +175,16 @@ public class Result {
                     ArrayList<Integer> TSR_GAAList =tsr_gaaAlgorithm.run();
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
-                    for (Integer i1 : TSR_GAAList) {
-                        TSR_GAA_Cost += Case_Cost[i1];
-                        TSR_GAA_Err += Error_Detection[i1];
+                    s.append("M").append(i + 1).append(":");
+                    for (int i1 = 0; i1 < TSR_GAAList.size(); i1++) {
+                        TSR_GAA_Cost += Case_Cost[TSR_GAAList.get(i1)];
+                        TSR_GAA_Err += Error_Detection[TSR_GAAList.get(i1)];
+                        if (i1==0)
+                            s.append(" [").append(TSR_GAAList.get(i1)+1).append("  ");
+                        else if (i1==TSR_GAAList.size()-1)
+                            s.append(TSR_GAAList.get(i1)+1).append("]\n");
+                        else
+                            s.append(TSR_GAAList.get(i1)+1).append("  ");
                     }
                     double Reduction_situation=TSR_GAAList.size()*1.0/Case_Cost.length;//约简情况
                     Cost[i]=TSR_GAA_Cost;
@@ -156,9 +204,16 @@ public class Result {
                     ArrayList<Integer> RTSR_HGSList = RTSR_HGSAlgorithm.algorithm(matrix.Matrix.get(i),Case_Cost,Error_Detection);
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
-                    for (Integer i1 : RTSR_HGSList) {
-                        RTSR_HGS_Cost += Case_Cost[i1];
-                        RTSR_HGS_Err += Error_Detection[i1];
+                    s.append("M").append(i + 1).append(":");
+                    for (int i1 = 0; i1 < RTSR_HGSList.size(); i1++) {
+                        RTSR_HGS_Cost += Case_Cost[RTSR_HGSList.get(i1)];
+                        RTSR_HGS_Err += Error_Detection[RTSR_HGSList.get(i1)];
+                        if (i1==0)
+                            s.append(" [").append(RTSR_HGSList.get(i1)+1).append("  ");
+                        else if (i1==RTSR_HGSList.size()-1)
+                            s.append(RTSR_HGSList.get(i1)+1).append("]\n");
+                        else
+                            s.append(RTSR_HGSList.get(i1)+1).append("  ");
                     }
                     double Reduction_situation=RTSR_HGSList.size()*1.0/Case_Cost.length;//约简情况
                     Cost[i]=RTSR_HGS_Cost;
@@ -173,6 +228,7 @@ public class Result {
         result.put(2,Cost);
         result.put(3,Err);
         result.put(4,Time);
+        Case.put(mode,s.toString());
         return result;
     }
     public Map<Integer,Map<Integer,double[]>> getAllAlgorithm(){//计算所有算法的运行结果
