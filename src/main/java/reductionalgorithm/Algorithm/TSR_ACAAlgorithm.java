@@ -98,6 +98,7 @@ public class TSR_ACAAlgorithm {
         if (Case == 1) {//当测试用例数为1时，直接返回
             res.add(0);
             result.put(0, res);
+            return result;
         }
         if (Need == 1) {//当测试需求数为1时，返回第一个满足的测试用例
             for (int i = 0; i < Case; i++) {

@@ -12,7 +12,7 @@ import java.util.Map;
 public class ShowResultWindows extends AbstractWindow<ResultService>{
     Map<Integer, Map<Integer,double[]>> AllAlgorithmResult;
     Map<Integer,String> Case;//各个算法在不同规模下得到的约简测试集
-    StringBuilder Result;
+    StringBuilder Result;//所有算法的运算结果
     public ShowResultWindows(Result result, Map<Integer, Map<Integer, double[]>> AllAlgorithmResult) {
         super("查看算法原始结果", new Dimension(500,700), true, ResultService.class);
         this.setDefaultCloseAction(CloseAction.DISPOSE);

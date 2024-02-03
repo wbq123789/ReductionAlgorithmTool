@@ -60,9 +60,12 @@ public class Result {
                     for (int i1 = 0; i1 < greedyList.size(); i1++) {
                         G_Cost += Case_Cost[greedyList.get(i1)];
                         G_Err += Error_Detection[greedyList.get(i1)];
-                        if (i1==0)
-                            s.append(" [").append(greedyList.get(i1)+1).append("  ");
-                        else if (i1==greedyList.size()-1)
+                        if (i1==0){
+                            if (greedyList.size()==1)
+                                s.append(" [").append(greedyList.get(i1) + 1).append("]\n");
+                            else
+                                s.append(" [").append(greedyList.get(i1) + 1).append("  ");
+                        }else if (i1==greedyList.size()-1)
                             s.append(greedyList.get(i1)+1).append("]\n");
                         else
                             s.append(greedyList.get(i1)+1).append("  ");
@@ -89,9 +92,12 @@ public class Result {
                     for (int i1 = 0; i1 < HGSList.size(); i1++) {
                         HGS_Cost += Case_Cost[HGSList.get(i1)];
                         HGS_Err += Error_Detection[HGSList.get(i1)];
-                        if (i1==0)
-                            s.append(" [").append(HGSList.get(i1)+1).append("  ");
-                        else if (i1==HGSList.size()-1)
+                        if (i1==0){
+                            if (HGSList.size()==1)
+                                s.append(" [").append(HGSList.get(i1) + 1).append("]\n");
+                            else
+                                s.append(" [").append(HGSList.get(i1) + 1).append("  ");
+                        }else if (i1==HGSList.size()-1)
                             s.append(HGSList.get(i1)+1).append("]\n");
                         else
                             s.append(HGSList.get(i1)+1).append("  ");
@@ -119,9 +125,12 @@ public class Result {
                 for (int i1 = 0; i1 < ACAList.size(); i1++) {
                     ACA_Cost += Case_Cost[ACAList.get(i1)];
                     ACA_Err += Error_Detection[ACAList.get(i1)];
-                    if (i1==0)
-                        s.append(" [").append(ACAList.get(i1)+1).append("  ");
-                    else if (i1==ACAList.size()-1)
+                    if (i1==0){
+                        if (ACAList.size()==1)
+                            s.append(" [").append(ACAList.get(i1) + 1).append("]\n");
+                        else
+                            s.append(" [").append(ACAList.get(i1) + 1).append("  ");
+                    }else if (i1==ACAList.size()-1)
                         s.append(ACAList.get(i1)+1).append("]\n");
                     else
                         s.append(ACAList.get(i1)+1).append("  ");
@@ -149,9 +158,12 @@ public class Result {
                     for (int i1 = 0; i1 < TSR_ACAList.size(); i1++) {
                         TSR_ACA_Cost += Case_Cost[TSR_ACAList.get(i1)];
                         TSR_ACA_Err += Error_Detection[TSR_ACAList.get(i1)];
-                        if (i1==0)
-                            s.append(" [").append(TSR_ACAList.get(i1)+1).append("  ");
-                        else if (i1==TSR_ACAList.size()-1)
+                        if (i1==0){
+                            if (TSR_ACAList.size()==1)
+                                s.append(" [").append(TSR_ACAList.get(i1) + 1).append("]\n");
+                            else
+                                s.append(" [").append(TSR_ACAList.get(i1) + 1).append("  ");
+                        }else if (i1==TSR_ACAList.size()-1)
                             s.append(TSR_ACAList.get(i1)+1).append("]\n");
                         else
                             s.append(TSR_ACAList.get(i1)+1).append("  ");
@@ -179,9 +191,12 @@ public class Result {
                     for (int i1 = 0; i1 < TSR_GAAList.size(); i1++) {
                         TSR_GAA_Cost += Case_Cost[TSR_GAAList.get(i1)];
                         TSR_GAA_Err += Error_Detection[TSR_GAAList.get(i1)];
-                        if (i1==0)
-                            s.append(" [").append(TSR_GAAList.get(i1)+1).append("  ");
-                        else if (i1==TSR_GAAList.size()-1)
+                        if (i1==0){
+                            if (TSR_GAAList.size()==1)
+                                s.append(" [").append(TSR_GAAList.get(i1) + 1).append("]\n");
+                            else
+                                s.append(" [").append(TSR_GAAList.get(i1) + 1).append("  ");
+                        }else if (i1==TSR_GAAList.size()-1)
                             s.append(TSR_GAAList.get(i1)+1).append("]\n");
                         else
                             s.append(TSR_GAAList.get(i1)+1).append("  ");
@@ -208,9 +223,12 @@ public class Result {
                     for (int i1 = 0; i1 < RTSR_HGSList.size(); i1++) {
                         RTSR_HGS_Cost += Case_Cost[RTSR_HGSList.get(i1)];
                         RTSR_HGS_Err += Error_Detection[RTSR_HGSList.get(i1)];
-                        if (i1==0)
-                            s.append(" [").append(RTSR_HGSList.get(i1)+1).append("  ");
-                        else if (i1==RTSR_HGSList.size()-1)
+                        if (i1==0) {
+                            if (RTSR_HGSList.size()==1)
+                                s.append(" [").append(RTSR_HGSList.get(i1) + 1).append("]\n");
+                            else
+                                s.append(" [").append(RTSR_HGSList.get(i1) + 1).append("  ");
+                        }else if (i1==RTSR_HGSList.size()-1)
                             s.append(RTSR_HGSList.get(i1)+1).append("]\n");
                         else
                             s.append(RTSR_HGSList.get(i1)+1).append("  ");

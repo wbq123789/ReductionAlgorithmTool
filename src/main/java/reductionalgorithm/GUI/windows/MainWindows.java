@@ -17,7 +17,7 @@ public class MainWindows extends AbstractWindow<MainService>{
     public Matrix Matrix;//输入矩阵
     public Config config;//算法参数
     public Result result;//算法运算结果
-    ResultPanel resultPanel_One;
+    JTextArea result_One;
     ResultPanel resultPanel_All;
     Map<Integer,Map<Integer,double[]>> ret_ALL;
     Map<Integer,double[]> ret_G;
@@ -102,79 +102,67 @@ public class MainWindows extends AbstractWindow<MainService>{
             TabbedPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
             this.addComponent(TabbedPanel,"Main.OneAlgorithm",new JPanel(new BorderLayout()),panel -> {//查看各个算法运行结果
                 panel.setName("查看各个算法运行结果");
-                this.addComponent(panel,"Main.OneAlgorithm.ShowPanel",new JPanel(new BorderLayout()),BorderLayout.CENTER,SPanel-> this.addComponent(SPanel, "Main.OneAlgorithm.ShowPanel.Show",(resultPanel_One=new ResultPanel()),BorderLayout.CENTER, ShowPanel -> ShowPanel.setPreferredSize(SPanel.getSize())));
+                this.addComponent(panel,"Main.OneAlgorithm.ShowPanel",new JPanel(new BorderLayout()),BorderLayout.CENTER,SPanel-> {
+                    this.addComponent(SPanel,"Main.OneAlgorithm.ShowPanel.ScrollPane",new JScrollPane(),BorderLayout.CENTER, SPane->{//承载矩阵的滚动面板
+                        SPane.setPreferredSize(SPanel.getSize());
+                        result_One=new JTextArea();
+                        this.mapComponent("Change.ScrollPane.TextArea",result_One);
+                        SPane.setViewportView(result_One);
+                        result_One.setForeground(Color.black);
+                        result_One.setPreferredSize(SPanel.getSize());
+                        result_One.setEditable(false);
+                        result_One.setBackground(Color.white);
+                        result_One.setFont(new Font("宋体", Font.PLAIN, 25));
+                    });
+                });
                 this.addComponent(panel,"Main.OneAlgorithm.ButtonPanel",new JPanel(new VerticalLayout(25)),BorderLayout.EAST, BPanel->{
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.GButton",new JButton("G算法"),Button-> Button.addActionListener(e->{
                         if (ret_G==null) {
                             JOptionPane.showMessageDialog(this, "G算法运行中，请稍后");
                             return;
-                        } else if (isCanCompare()) {
-                            JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
-                            return;
                         }
-                        CoordinateTransform change=new CoordinateTransform(ret_G);
-                        resultPanel_One.setData(change.getReturn(),1);
-                        resultPanel_One.repaint();
+                        String ret = service.ToString(result, ret_ALL, 1);
+                        result_One.setText(ret);
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.HGSButton",new JButton("HGS算法"),Button-> Button.addActionListener(e->{
                         if (ret_HGS==null) {
                             JOptionPane.showMessageDialog(this, "HGS算法运行中，请稍后");
                             return;
-                        }else if (isCanCompare()) {
-                            JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
-                            return;
                         }
-                        CoordinateTransform change=new CoordinateTransform(ret_HGS);
-                        resultPanel_One.setData(change.getReturn(),1);
-                        resultPanel_One.repaint();
+                        String ret = service.ToString(result, ret_ALL, 2);
+                        result_One.setText(ret);
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.ACAButton",new JButton("ACA算法"),Button-> Button.addActionListener(e->{
                         if (ret_ACA==null) {
                             JOptionPane.showMessageDialog(this, "ACA算法运行中，请稍后");
                             return;
-                        }else if (isCanCompare()) {
-                            JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
-                            return;
                         }
-                        CoordinateTransform change=new CoordinateTransform(ret_ACA);
-                        resultPanel_One.setData(change.getReturn(),1);
-                        resultPanel_One.repaint();
+                        String ret = service.ToString(result, ret_ALL, 3);
+                        result_One.setText(ret);
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.TSR_ACAButton",new JButton("TSR_ACA算法"),Button-> Button.addActionListener(e->{
                         if (ret_TSR_ACA==null) {
                             JOptionPane.showMessageDialog(this, "TSR_ACA算法运行中，请稍后");
                             return;
-                        }else if (isCanCompare()) {
-                            JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
-                            return;
                         }
-                        CoordinateTransform change=new CoordinateTransform(ret_TSR_ACA);
-                        resultPanel_One.setData(change.getReturn(),1);
-                        resultPanel_One.repaint();
+                        String ret = service.ToString(result, ret_ALL, 4);
+                        result_One.setText(ret);
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.TSR_GAAButton",new JButton("TSR_GAA算法"),Button-> Button.addActionListener(e->{
                         if (ret_TSR_GAA==null) {
                             JOptionPane.showMessageDialog(this, "TSR_GAA算法运行中，请稍后");
                             return;
-                        }else if (isCanCompare()) {
-                            JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
-                            return;
                         }
-                        CoordinateTransform change=new CoordinateTransform(ret_TSR_GAA);
-                        resultPanel_One.setData(change.getReturn(),1);
-                        resultPanel_One.repaint();
+                        String ret = service.ToString(result, ret_ALL, 5);
+                        result_One.setText(ret);
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.RTSR_HGSButton",new JButton("RTSR_HGS算法"),Button-> Button.addActionListener(e->{
                         if (ret_RTSR_HGS==null) {
                             JOptionPane.showMessageDialog(this, "RTSR_HGS算法运行中，请稍后");
                             return;
-                        }else if (isCanCompare()) {
-                            JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
-                            return;
                         }
-                        CoordinateTransform change=new CoordinateTransform(ret_RTSR_HGS);
-                        resultPanel_One.setData(change.getReturn(),1);
-                        resultPanel_One.repaint();
+                        String ret = service.ToString(result, ret_ALL, 6);
+                        result_One.setText(ret);
                     }));
                 });
             });

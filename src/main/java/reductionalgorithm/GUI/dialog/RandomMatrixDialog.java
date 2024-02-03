@@ -2,6 +2,7 @@ package reductionalgorithm.GUI.dialog;
 
 import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.service.MatrixService;
+import reductionalgorithm.GUI.windows.ChangeMatrixWindow;
 import reductionalgorithm.GUI.windows.WelcomeWindow;
 
 import javax.swing.*;
@@ -107,8 +108,8 @@ public class RandomMatrixDialog extends AbstractDialog{
                 this.parentWindow.dispose();//这里别用closeWindow，因为默认是退出程序
                 matrixService=new MatrixService();
                 Matrix matrix = matrixService.createMatrix(M_T, M_R);
-                //转入Main
-                matrixService.GoToMainWindows(matrix);
+                ChangeMatrixWindow changeMatrixWindow=new ChangeMatrixWindow(matrix,this);
+                changeMatrixWindow.openWindow();
             } );
         } );
     }

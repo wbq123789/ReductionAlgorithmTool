@@ -44,4 +44,60 @@ public class MainService extends AbstractService{
         WelcomeWindow startWindow = new WelcomeWindow();
         startWindow.openWindow();
     }
+    public String ToString(Result result, Map<Integer, Map<Integer, double[]>> AllAlgorithmResult,int mode){
+        StringBuilder Result_One=new StringBuilder();
+        Map<Integer,String> Case=result.getCase();//各个算法在不同规模下得到的约简测试集
+        switch (mode){
+            case 1:
+                Result_One.append("G算法：\n");
+                break;
+            case 2:
+                Result_One.append("HGS算法：\n");
+                break;
+            case 3:
+                Result_One.append("ACA算法：\n");
+                break;
+            case 4:
+                Result_One.append("TSR-ACA算法：\n");
+                break;
+            case 5:
+                Result_One.append("TSR-GAA算法：\n");
+                break;
+            case 6:
+                Result_One.append("RTSR-HGS算法：\n");
+                break;
+        }
+        Map<Integer, double[]> resultmap = AllAlgorithmResult.get(mode);
+        resultmap.forEach((Key, Value)->{
+            switch (Key){
+                case 1:
+                    Result_One.append("约简情况：\n");
+                    for (int j = 0; j < Value.length; j++) {
+                        Result_One.append("M").append(j + 1).append(": ").append(String.format("%.2f",Value[j]*100)).append("% ");
+                    }
+                    break;
+                case 2:
+                    Result_One.append("精简测试集：\n").append(Case.get(mode)).append("测试运行代价：\n");
+                    for (int j = 0; j < Value.length; j++) {
+                        Result_One.append("M").append(j + 1).append(": ").append((int)Value[j]).append(" ");
+                    }
+                    break;
+                case 3:
+                    Result_One.append("错误检测能力：\n");
+                    for (int j = 0; j < Value.length; j++) {
+                        Result_One.append("M").append(j + 1).append(": ").append((int)Value[j]).append(" ");
+                    }
+                    break;
+                case 4:
+                    Result_One.append("算法运行时间：\n");
+                    for (int j = 0; j < Value.length; j++) {
+                        Result_One.append("M").append(j + 1).append(": ").append(String.format("%.3f",Value[j]/1000)).append(" ");
+                    }
+                    break;
+            }
+            Result_One.append("\n");
+        });
+        return Result_One.toString();
+    }
+
 }

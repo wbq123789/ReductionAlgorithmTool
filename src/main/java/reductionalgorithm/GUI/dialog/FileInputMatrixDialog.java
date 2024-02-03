@@ -2,6 +2,8 @@ package reductionalgorithm.GUI.dialog;
 
 import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.service.MatrixService;
+import reductionalgorithm.GUI.windows.ChangeMatrixWindow;
+import reductionalgorithm.GUI.windows.MainWindows;
 import reductionalgorithm.GUI.windows.WelcomeWindow;
 
 import javax.swing.*;
@@ -12,7 +14,7 @@ public class FileInputMatrixDialog extends AbstractDialog{
     private JButton button_ensure;
     private String FilePath=null;
     private MatrixService matrixService;
-    private final WelcomeWindow parentWindow; //这里暂时存一下父窗口，后面方便一起关掉
+    public final WelcomeWindow parentWindow; //这里暂时存一下父窗口，后面方便一起关掉
     public FileInputMatrixDialog(WelcomeWindow parent) {
         super(parent, "矩阵文件读入",new Dimension(600,150));
         this.parentWindow=parent;
@@ -54,7 +56,8 @@ public class FileInputMatrixDialog extends AbstractDialog{
                 }
                 this.closeDialog();//参数创建成功，关闭所有窗口，打开主窗口
                 this.parentWindow.dispose();//这里别用closeWindow，因为默认是退出程序
-                matrixService.GoToMainWindows(matrix);//转入Main窗口
+                ChangeMatrixWindow changeMatrixWindow=new ChangeMatrixWindow(matrix,this);
+                changeMatrixWindow.openWindow();
             });
         });
     }
