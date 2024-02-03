@@ -268,13 +268,7 @@ public class TSR_GAAAlgorithm {
             }
             currentFittest=individuals[bestIndex].Clone();
         }
-        public Individual[] Clone() {
-            Individual[] individuals = new Individual[Need];
-            for (int i = 0; i < Need; i++) {
-                individuals[i]=population.individuals[i].Clone();
-            }
-            return individuals;
-        }
+
         //获取最适应的个体
         public Individual getBestFittest() {
             return individuals[bestIndex].Clone();

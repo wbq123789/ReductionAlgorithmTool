@@ -2,14 +2,12 @@ package reductionalgorithm.GUI.dialog;
 
 import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.service.MatrixService;
-import reductionalgorithm.GUI.windows.ChangeMatrixWindow;
-import reductionalgorithm.GUI.windows.WelcomeWindow;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class RandomMatrixDialog extends AbstractDialog{
+public class RandomMatrixMultipleDialog extends AbstractDialog{
     private JTextField M1T;  //矩阵行数
     private JTextField M2T;
     private JTextField M3T;
@@ -22,13 +20,12 @@ public class RandomMatrixDialog extends AbstractDialog{
     private JTextField M5R;
     private ArrayList<Integer> M_T;//所有矩阵行数
     private ArrayList<Integer>M_R;//所有矩阵列数
-    private JButton determineButton;//确定矩阵参数按钮
     private MatrixService matrixService;
 
-    private final WelcomeWindow parentWindow; //这里暂时存一下父窗口，后面方便一起关掉
-    public RandomMatrixDialog(WelcomeWindow parent) {
+    private final RandomSelectDialog parentDialog; //这里暂时存一下父窗口，后面方便一起关掉
+    public RandomMatrixMultipleDialog(RandomSelectDialog parent) {
         super(parent, "矩阵生成",new Dimension(500,360));
-        this.parentWindow=parent;
+        this.parentDialog=parent;
     }
 
 
@@ -66,7 +63,7 @@ public class RandomMatrixDialog extends AbstractDialog{
         this.addComponent((M3R=new JTextField()),TextField-> TextField.setBounds(340, 140, 50, 25));
         this.addComponent((M4R=new JTextField()),TextField-> TextField.setBounds(340, 180, 50, 25));
         this.addComponent((M5R=new JTextField()),TextField-> TextField.setBounds(340, 220, 50, 25));
-        this.addComponent((determineButton=new JButton("确定")),button ->{
+        this.addComponent(new JButton("确定"), button ->{
             button.setBounds(380,270,80,40);
             button.addActionListener(e ->{
                 int m1t,m2t,m3t,m4t,m5t;
@@ -104,12 +101,13 @@ public class RandomMatrixDialog extends AbstractDialog{
                 M_R.add(m3r);
                 M_R.add(m4r);
                 M_R.add(m5r);
-                this.closeDialog();//参数创建成功，关闭所有窗口，打开项目编辑窗口
-                this.parentWindow.dispose();//这里别用closeWindow，因为默认是退出程序
                 matrixService=new MatrixService();
                 Matrix matrix = matrixService.createMatrix(M_T, M_R);
-                ChangeMatrixWindow changeMatrixWindow=new ChangeMatrixWindow(matrix,this);
-                changeMatrixWindow.openWindow();
+                ShowDialog showDialog=new ShowDialog(this,this.parentDialog.parentWindows, matrix);
+                parentDialog.matrixDialog.closeDialog();
+                parentDialog.closeDialog();
+                showDialog.openDialog();
+                this.closeDialog();
             } );
         } );
     }

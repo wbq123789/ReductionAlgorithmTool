@@ -162,8 +162,10 @@ public class ChangeParametersDialog extends AbstractDialog{
                    config.TSR_GAA5=TSR_GAA5_;
                    config.TSR_GAA6=TSR_GAA6_;
                    parentWindow.config=config;
-                   parentWindow.Clean();
-                   parentWindow.Compute();//重新运算结果
+                   if (parentWindow.isInput) {
+                       parentWindow.Clean();
+                       parentWindow.Compute();//重新运算结果
+                   }
                    JOptionPane.showMessageDialog(this, "参数更改成功！");
                    this.closeDialog();//参数创建成功，关闭所有窗口，打开项目编辑窗口
             });

@@ -1,7 +1,7 @@
 package reductionalgorithm;
 
 import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
-import reductionalgorithm.GUI.windows.WelcomeWindow;
+import reductionalgorithm.GUI.windows.MainWindows;
 
 import javax.swing.*;
 
@@ -19,7 +19,7 @@ public class Main {
             System.err.println("Failed to initialize LaF");
             //}//设置窗口UI风格
         }
-        WelcomeWindow startWindow = new WelcomeWindow();
-        startWindow.openWindow();
+        MainWindows mainWindows=new MainWindows();
+        mainWindows.openWindow();
     }
 }

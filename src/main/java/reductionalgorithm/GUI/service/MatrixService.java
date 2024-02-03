@@ -2,7 +2,6 @@ package reductionalgorithm.GUI.service;
 
 
 import reductionalgorithm.GUI.entity.Matrix;
-import reductionalgorithm.GUI.windows.MainWindows;
 
 import java.util.ArrayList;
 
@@ -13,10 +12,7 @@ public class MatrixService extends AbstractService{
     public Matrix createMatrix(String FilePath){
         return new Matrix(FilePath);
     }
-    public void GoToMainWindows(Matrix matrix){
-        MainWindows mainWindows=new MainWindows(matrix);
-        mainWindows.openWindow();
-    }
+
     public Matrix changeMatrix(String matrix,int number){
         Matrix changematrix=new Matrix();
         if (changematrix.init(matrix,number))

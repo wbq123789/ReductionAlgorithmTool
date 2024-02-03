@@ -1,14 +1,14 @@
 package reductionalgorithm.GUI.service;
 
 import reductionalgorithm.GUI.dialog.ChangeParametersDialog;
+import reductionalgorithm.GUI.dialog.MatrixDialog;
+import reductionalgorithm.GUI.dialog.ShowDialog;
 import reductionalgorithm.GUI.entity.Config;
 import reductionalgorithm.GUI.entity.ExportMatrix;
 import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.entity.Result;
-import reductionalgorithm.GUI.windows.ChangeMatrixWindow;
 import reductionalgorithm.GUI.windows.MainWindows;
 import reductionalgorithm.GUI.windows.ShowResultWindows;
-import reductionalgorithm.GUI.windows.WelcomeWindow;
 
 import javax.swing.*;
 import java.util.Map;
@@ -31,18 +31,13 @@ public class MainService extends AbstractService{
         ChangeParametersDialog changeParametersDialog=new ChangeParametersDialog((MainWindows)this.getWindow(),config);
         changeParametersDialog.openDialog();
     }
-    public void changeMatrix(Matrix matrix){
-        ChangeMatrixWindow changeMatrixWindow=new ChangeMatrixWindow(matrix,(MainWindows)this.getWindow());
-        changeMatrixWindow.openWindow();
+    public void changeMatrix(MainWindows currentWindow,Matrix matrix){
+        ShowDialog showDialog=new ShowDialog(currentWindow,matrix);
+        showDialog.openDialog();
     }
     public void showResult(Result result, Map<Integer, Map<Integer,double[]>> AllAlgorithmResult){
         ShowResultWindows resultWindows=new ShowResultWindows(result,AllAlgorithmResult);
         resultWindows.openWindow();
-    }
-    public void ReStart(MainWindows currentWindow){
-        currentWindow.closeWindow();
-        WelcomeWindow startWindow = new WelcomeWindow();
-        startWindow.openWindow();
     }
     public String ToString(Result result, Map<Integer, Map<Integer, double[]>> AllAlgorithmResult,int mode){
         StringBuilder Result_One=new StringBuilder();
@@ -100,4 +95,8 @@ public class MainService extends AbstractService{
         return Result_One.toString();
     }
 
+    public void Matrix(MainWindows currentWindow){
+        MatrixDialog matrixDialog=new MatrixDialog(currentWindow);
+        matrixDialog.openDialog();
+    }
 }

@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * - 每个窗口都有一个对应的Service来对各项功能进行具体实现。
  * - 与工具类、管理类这些底层操作相关的，只能由Service来交互。
  * 因此，在编写窗口的时候需要分三层来写,例如：
- * - WelcomeWindow <-> WelcomeService <-> Tools、Manager
+ * - WelcomeWindow <-> InputService <-> Tools、Manager
  * - MainWindow <-> MainService <-> Tools、Manager
  */
 public abstract class AbstractWindow<R extends AbstractService> extends JFrame {
