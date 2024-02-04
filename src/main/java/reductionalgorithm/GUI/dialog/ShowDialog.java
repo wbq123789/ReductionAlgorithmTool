@@ -20,7 +20,7 @@ public class ShowDialog extends JDialog{
     private final MainWindows parentWindow; //这里暂时存一下父窗口
     public ShowDialog(AbstractDialog parent,MainWindows mainWindows, Matrix matrix){
         super(parent,"微调矩阵", true);
-        this.setSize(new Dimension(1000,900));
+        this.setSize(new Dimension(1000,700));
         this.setResizable(false);
         this.setLocation(this.calculateCenter());
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -30,7 +30,7 @@ public class ShowDialog extends JDialog{
     }
     public ShowDialog(MainWindows mainWindows, Matrix matrix){
         super(mainWindows,"微调矩阵", true);
-        this.setSize(new Dimension(1000,900));
+        this.setSize(new Dimension(1000,700));
         this.setResizable(false);
         this.setLocation(this.calculateCenter());
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -70,7 +70,7 @@ public class ShowDialog extends JDialog{
 
             //======== scrollPane1 ========
             {
-                scrollPane1.setPreferredSize(new Dimension(400,700));
+                scrollPane1.setPreferredSize(new Dimension(400,500));
                 scrollPane1.setViewportView(jTextArea);
                 {;
                     jTextArea.setText(matrix.toString());

@@ -25,10 +25,22 @@ public class CoordinateTransform{
             Return.put(i,Ret);
         });
     }
-    public CoordinateTransform(Map<Integer,Map<Integer,double[]>> result,int mode){
+    public CoordinateTransform(Map<Integer,Map<Integer,double[]>> result,int mode,Matrix matrix){
         Return=new HashMap<>();
         Map<Integer,double[]> mid=new HashMap<>();
-        result.forEach((i,Ret)-> mid.put(i,Ret.get(mode)));
+        result.forEach((i,Ret)-> {
+            if (mode!=1)
+                mid.put(i, Ret.get(mode));
+            else{
+
+                double[] doubles = Ret.get(mode).clone();
+                for (int i1 = 0; i1 < doubles.length; i1++) {
+                    int length = matrix.Case_Cost.get(i1).length;
+                    doubles[i1] /=length;//把个数转化为百分比
+                }
+                mid.put(i,doubles);
+            }
+        });
         final double[] Max = {0};
         mid.forEach((i,Ret)->{
             double[] copy = Arrays.copyOf(Ret, Ret.length);

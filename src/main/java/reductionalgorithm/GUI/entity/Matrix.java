@@ -175,6 +175,28 @@ public class Matrix {
         }
         return true;
     }
+    public Map<Integer,Integer> All_Cost(){//所有测试用例测试代价的总和
+        Map<Integer,Integer> Cost=new HashMap<>();
+        Case_Cost.forEach((key,value)->{
+            int V=0;
+            for (int i : value) {
+                V+=i;
+            }
+            Cost.put(key,V);
+        });
+        return Cost;
+    }
+    public Map<Integer,Integer> All_Error(){//所有测试用例错误检测能力的总和
+        Map<Integer,Integer> Error=new HashMap<>();
+        Error_Detection.forEach((key,value)->{
+            int V=0;
+            for (int i : value) {
+                V+=i;
+            }
+            Error.put(key,V);
+        });
+        return Error;
+    }
     @Override
     public String toString() {
         StringBuilder s=new StringBuilder();

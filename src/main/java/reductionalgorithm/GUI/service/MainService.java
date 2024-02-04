@@ -35,52 +35,65 @@ public class MainService extends AbstractService{
         ShowDialog showDialog=new ShowDialog(currentWindow,matrix);
         showDialog.openDialog();
     }
-    public void showResult(Result result, Map<Integer, Map<Integer,double[]>> AllAlgorithmResult){
-        ShowResultWindows resultWindows=new ShowResultWindows(result,AllAlgorithmResult);
+    public void showResult(Result result, Map<Integer, Map<Integer,double[]>> AllAlgorithmResult,Matrix matrix){
+        ShowResultWindows resultWindows=new ShowResultWindows(result,AllAlgorithmResult,matrix);
         resultWindows.openWindow();
     }
-    public String ToString(Result result, Map<Integer, Map<Integer, double[]>> AllAlgorithmResult,int mode){
+    public String ToString(Result result, Map<Integer, Map<Integer, double[]>> AllAlgorithmResult,int mode,Matrix matrix){
+        Map<Integer, Integer> Cost_All = matrix.All_Cost();
+        Map<Integer, Integer> Error_All = matrix.All_Error();
         StringBuilder Result_One=new StringBuilder();
         Map<Integer,String> Case=result.getCase();//各个算法在不同规模下得到的约简测试集
         switch (mode){
             case 1:
-                Result_One.append("G算法：\n");
+                Result_One.append("G算法：\n\n");
                 break;
             case 2:
-                Result_One.append("HGS算法：\n");
+                Result_One.append("HGS算法：\n\n");
                 break;
             case 3:
-                Result_One.append("ACA算法：\n");
+                Result_One.append("ACA算法：\n\n");
                 break;
             case 4:
-                Result_One.append("TSR-ACA算法：\n");
+                Result_One.append("TSR-ACA算法：\n\n");
                 break;
             case 5:
-                Result_One.append("TSR-GAA算法：\n");
+                Result_One.append("TSR-GAA算法：\n\n");
                 break;
             case 6:
-                Result_One.append("RTSR-HGS算法：\n");
+                Result_One.append("RTSR-HGS算法：\n\n");
                 break;
         }
         Map<Integer, double[]> resultmap = AllAlgorithmResult.get(mode);
+        Result_One.append("约简后的测试用例集：\n").append(Case.get(mode));
+        Map<Integer, int[]> caseCost = matrix.Case_Cost;
         resultmap.forEach((Key, Value)->{
             switch (Key){
                 case 1:
-                    Result_One.append("约简情况：\n");
+                    Result_One.append("测试用例集规模的约简率：\n");
                     for (int j = 0; j < Value.length; j++) {
-                        Result_One.append("M").append(j + 1).append(": ").append(String.format("%.2f",Value[j]*100)).append("% ");
+                        Result_One.append("M").append(j + 1).append(": ")
+                                .append("原测试用例集个数：").append(caseCost.get(j).length)
+                                .append("，约简后测试用例集个数：").append((int)Value[j])
+                                .append(String.format("，约简率为%.2f%%\n",(1-Value[j]/caseCost.get(j).length)*100));
                     }
                     break;
                 case 2:
-                    Result_One.append("精简测试集：\n").append(Case.get(mode)).append("测试运行代价：\n");
+                    Result_One.append("测试用例集运行代价的约简率：\n");
                     for (int j = 0; j < Value.length; j++) {
-                        Result_One.append("M").append(j + 1).append(": ").append((int)Value[j]).append(" ");
+                        Result_One.append("M").append(j + 1).append(": ")
+                                .append("原测试用例集运行代价：").append(Cost_All.get(j))
+                                .append("，约简后测试用例集运行代价：").append((int)Value[j])
+                                .append(String.format("，约简率为%.2f%%\n",(1-Value[j]/Cost_All.get(j))*100));
                     }
                     break;
                 case 3:
-                    Result_One.append("错误检测能力：\n");
+                    Result_One.append("测试用例集错误检测能力的丢失率：\n");
                     for (int j = 0; j < Value.length; j++) {
-                        Result_One.append("M").append(j + 1).append(": ").append((int)Value[j]).append(" ");
+                        Result_One.append("M").append(j + 1).append(": ")
+                                .append("原测试用例集错误检测能力：").append(Error_All.get(j))
+                                .append("，约简后测试用例集错误检测能力：").append((int)Value[j])
+                                .append(String.format("，丢失率为%.2f%%\n",(1-Value[j]/Error_All.get(j))*100));
                     }
                     break;
                 case 4:
@@ -94,7 +107,6 @@ public class MainService extends AbstractService{
         });
         return Result_One.toString();
     }
-
     public void Matrix(MainWindows currentWindow){
         MatrixDialog matrixDialog=new MatrixDialog(currentWindow);
         matrixDialog.openDialog();

@@ -10,6 +10,7 @@ import reductionalgorithm.GUI.panel.ResultPanel;
 import reductionalgorithm.GUI.service.MainService;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class MainWindows extends AbstractWindow<MainService>{
     public Config config;//算法参数
     public Result result;//算法运算结果
     public boolean isInput;//是否输入数据
+    public boolean tips;//蚁群算法参数提示
     JTextArea result_One;
     ResultPanel resultPanel_All;
     Map<Integer,Map<Integer,double[]>> ret_ALL;
@@ -33,6 +35,7 @@ public class MainWindows extends AbstractWindow<MainService>{
         //初始化变量
         this.Matrix=null;
         this.isInput=false;
+        this.tips=true;
         this.config=new Config();
         this.initWindowContent();
         this.result=new Result();
@@ -79,6 +82,7 @@ public class MainWindows extends AbstractWindow<MainService>{
     @Override
     protected void initWindowContent() {
         this.setResizable(false);
+        this.setLayout(new BorderLayout(0,0));
         this.setFont(new Font("宋体", Font.PLAIN, 18));//设定全局字体
         this.addComponent("Main.MenuBar",new JMenuBar(),BorderLayout.NORTH,menuBar->{//菜单栏
             this.addComponent(menuBar,"Main.MenuBar.MatrixMenu",new JMenu("矩阵设置"),menu->{
@@ -110,28 +114,25 @@ public class MainWindows extends AbstractWindow<MainService>{
                             JOptionPane.showMessageDialog(this, "算法运行中，请稍后");
                             return;
                         }
-                        service.showResult(result,ret_ALL);
+                        service.showResult(result,ret_ALL,Matrix);
                     }
                     else
                         JOptionPane.showMessageDialog(this, "请先输入数据！");
                 }));
             });
         });
-        this.addComponent("Main.TablePanel",new JTabbedPane(),BorderLayout.CENTER,TabbedPanel->{//算法展示区
+        this.addComponent("Main.TablePanel",new JTabbedPane(),BorderLayout.CENTER, TabbedPanel->{//算法展示区
             TabbedPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
             this.addComponent(TabbedPanel,"Main.OneAlgorithm",new JPanel(new BorderLayout()),panel -> {//查看各个算法运行结果
                 panel.setName("查看各个算法运行结果");
                 this.addComponent(panel,"Main.OneAlgorithm.ShowPanel",new JPanel(new BorderLayout()),BorderLayout.CENTER,SPanel-> {
+                    SPanel.setPreferredSize(null);
                     this.addComponent(SPanel,"Main.OneAlgorithm.ShowPanel.ScrollPane",new JScrollPane(),BorderLayout.CENTER, SPane->{//承载矩阵的滚动面板
-                        SPane.setPreferredSize(SPanel.getSize());
                         result_One=new JTextArea();
-                        this.mapComponent("Change.ScrollPane.TextArea",result_One);
+                        SPane.setPreferredSize(null);
                         SPane.setViewportView(result_One);
-                        result_One.setForeground(Color.black);
-                        result_One.setPreferredSize(SPanel.getSize());
                         result_One.setEditable(false);
-                        result_One.setBackground(Color.white);
-                        result_One.setFont(new Font("宋体", Font.PLAIN, 25));
+                        result_One.setFont(new Font("宋体", Font.PLAIN, 20));
                     });
                 });
                 this.addComponent(panel,"Main.OneAlgorithm.ButtonPanel",new JPanel(new VerticalLayout(25)),BorderLayout.EAST, BPanel->{
@@ -141,7 +142,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "G算法运行中，请稍后");
                                 return;
                             }
-                            String ret = service.ToString(result, ret_ALL, 1);
+                            String ret = service.ToString(result, ret_ALL, 1,this.Matrix);
                             result_One.setText(ret);
                         }
                         else
@@ -154,7 +155,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "HGS算法运行中，请稍后");
                                 return;
                             }
-                            String ret = service.ToString(result, ret_ALL, 2);
+                            String ret = service.ToString(result, ret_ALL, 2,this.Matrix);
                             result_One.setText(ret);
                         }
                         else
@@ -167,7 +168,11 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "ACA算法运行中，请稍后");
                                 return;
                             }
-                            String ret = service.ToString(result, ret_ALL, 3);
+                            if (tips) {
+                                JOptionPane.showMessageDialog(this, "Tip：蚁群类算法可通过算法菜单更改参数！");
+                                this.tips=false;
+                            }
+                            String ret = service.ToString(result, ret_ALL, 3,this.Matrix);
                             result_One.setText(ret);
                         }
                         else
@@ -179,7 +184,11 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "TSR_ACA算法运行中，请稍后");
                                 return;
                             }
-                            String ret = service.ToString(result, ret_ALL, 4);
+                            if (tips) {
+                                JOptionPane.showMessageDialog(this, "Tip：蚁群类算法可通过算法菜单更改参数！");
+                                this.tips=false;
+                            }
+                            String ret = service.ToString(result, ret_ALL, 4,this.Matrix);
                             result_One.setText(ret);
                         }
                         else
@@ -191,7 +200,11 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "TSR_GAA算法运行中，请稍后");
                                 return;
                             }
-                            String ret = service.ToString(result, ret_ALL, 5);
+                            if (tips) {
+                                JOptionPane.showMessageDialog(this, "Tip：蚁群类算法可通过算法菜单更改参数！");
+                                this.tips=false;
+                            }
+                            String ret = service.ToString(result, ret_ALL, 5,this.Matrix);
                             result_One.setText(ret);
                         }
                         else
@@ -204,7 +217,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "RTSR_HGS算法运行中，请稍后");
                                 return;
                             }
-                            String ret = service.ToString(result, ret_ALL, 6);
+                            String ret = service.ToString(result, ret_ALL, 6,this.Matrix);
                             result_One.setText(ret);
                         }
                         else
@@ -225,7 +238,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
                                 return;
                             }
-                            CoordinateTransform change=new CoordinateTransform(ret_ALL,1);
+                            CoordinateTransform change=new CoordinateTransform(ret_ALL,1,Matrix);
                             resultPanel_All.setData(change.getReturn(),2);
                             resultPanel_All.repaint();
                         }
@@ -241,7 +254,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
                                 return;
                             }
-                            CoordinateTransform change=new CoordinateTransform(ret_ALL,2);
+                            CoordinateTransform change=new CoordinateTransform(ret_ALL,2,Matrix);
                             resultPanel_All.setData(change.getReturn(),2);
                             resultPanel_All.repaint();
                         }
@@ -257,7 +270,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
                                 return;
                             }
-                            CoordinateTransform change=new CoordinateTransform(ret_ALL,3);
+                            CoordinateTransform change=new CoordinateTransform(ret_ALL,3,Matrix);
                             resultPanel_All.setData(change.getReturn(),2);
                             resultPanel_All.repaint();
                         }
@@ -273,7 +286,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                                 JOptionPane.showMessageDialog(this, "输入矩阵数量过少，无法有效展示可视化结果，请使用算法菜单来查看算法运行原始结果");
                                 return;
                             }
-                            CoordinateTransform change=new CoordinateTransform(ret_ALL,4);
+                            CoordinateTransform change=new CoordinateTransform(ret_ALL,4,Matrix);
                             resultPanel_All.setData(change.getReturn(),2);
                             resultPanel_All.repaint();
                         }
@@ -283,7 +296,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                 });
             });
         });
-        this.addComponent("Main.Exit",new JPanel(new FlowLayout()),BorderLayout.SOUTH,exit->{//退出系统
+        this.addComponent("Main.Exit",new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0)),BorderLayout.SOUTH,exit->{//退出系统
             this.addComponent(exit,"Main.Matrix",new JButton("输入数据"),button->{
                 button.setPreferredSize(new Dimension(90, 25));
                 button.addActionListener(e ->service.Matrix(this));
