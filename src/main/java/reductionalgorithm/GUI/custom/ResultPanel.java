@@ -1,4 +1,4 @@
-package reductionalgorithm.GUI.panel;
+package reductionalgorithm.GUI.custom;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResultPanel extends JPanel {
-    private Map<Integer, int[]> data_X;//输入算法结果（横坐标）
+    private Map<Integer, double[]> data_X;//输入算法结果（横坐标）
     private Integer mode;//根据数字区分，显示内容
     private final Map<Integer,String[]> string;
 
@@ -32,18 +32,14 @@ public class ResultPanel extends JPanel {
         {
             int Y_Len=this.getHeight();
             String[] strings = string.get(mode);
-            for (Map.Entry<Integer, int[]> entry : data_X.entrySet()) {
+            for (Map.Entry<Integer, double[]> entry : data_X.entrySet()) {
                 Integer key = entry.getKey();
-                int[] Y = entry.getValue();
+                double[] Y = entry.getValue();
                 int[] X = new int[]{50,230,410,590,770};
                 int[] Y_points=new int[Y.length];
-                if (mode==1)
+                if (mode == 2) {
                     for (int i = 0; i < Y_points.length; i++) {
-                        Y_points[i]=(100-Y[i])+(key-1)*100;
-                    }
-                else if (mode == 2) {
-                    for (int i = 0; i < Y_points.length; i++) {
-                        Y_points[i]= (int) (((1000-Y[i])*1.0/1000)*(Y_Len-100));
+                        Y_points[i]= (int) ((1-Y[i])*(Y_Len-100));
                     }
                 }
                 int[] X_points= Arrays.copyOfRange(X,0,Y_points.length);
@@ -61,12 +57,18 @@ public class ResultPanel extends JPanel {
             }
             for (int i = 0; i < data_X.get(1).length; i++) {
                 g2d.setColor(Color.black);
-                g2d.drawString("T"+(i+1),50+i*180,520);
+                g2d.drawString("M"+(i+1),50+i*180,520);
             }
+            g2d.drawString("100%",10,10);
+            g2d.drawString("80%",10, (int) (0.2*(Y_Len-100)));
+            g2d.drawString("60%",10,(int) (0.4*(Y_Len-100)));
+            g2d.drawString("40%",10,(int) (0.6*(Y_Len-100)));
+            g2d.drawString("20%",10,(int) (0.8*(Y_Len-100)));
+            g2d.drawString("0%",10,Y_Len-100);
         }
     }
 
-    public void setData(Map<Integer, int[]> data_X,Integer mode) {
+    public void setData(Map<Integer, double[]> data_X,Integer mode) {
         this.data_X = data_X;
         this.mode=mode;
     }

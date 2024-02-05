@@ -4,7 +4,9 @@ import reductionalgorithm.Algorithm.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * @program: ReductionAlgorithm
@@ -249,12 +251,39 @@ public class Result {
         Case.put(mode,s.toString());
         return result;
     }
-    public Map<Integer,Map<Integer,double[]>> getAllAlgorithm(){//计算所有算法的运行结果
+    public Map<Integer,Map<Integer,double[]>> getAllAlgorithm(){ //计算所有算法的运行结果
         Map<Integer,Map<Integer,double[]>> ret=new HashMap<>();
+        ExecutorService exec = Executors.newCachedThreadPool();//创建一个缓存线程池
+        List<Callable<Map<Integer,double[]>>> tasks = new ArrayList<>();//创建一个任务列表
         for (int i = 1; i <= 6; i++) {
-            ret.put(i,getOneAlgorithm(i));
+            final int index = i;
+            Callable<Map<Integer,double[]>> c = () -> {//把每个算法封装成一个 Callable 对象
+                return getOneAlgorithm(index);//调用 getOneAlgorithm 方法
+            };
+            tasks.add(c); //把 Callable 对象添加到任务列表中
+        }
+        try {
+            //执行所有的任务，并获取返回的 Future 对象列表
+            List<Future<Map<Integer,double[]>>> results = exec.invokeAll(tasks);
+            //遍历 Future 对象列表，获取每个算法的运行结果，并存储到 ret 中
+            for (int i = 0; i < results.size(); i++) {
+                ret.put(i+1,results.get(i).get());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            //关闭线程池
+            exec.shutdown();
         }
         return ret;
     }
+
+//    public Map<Integer,Map<Integer,double[]>> getAllAlgorithm(){//计算所有算法的运行结果
+//        Map<Integer,Map<Integer,double[]>> ret=new HashMap<>();
+//        for (int i = 1; i <= 6; i++) {
+//            ret.put(i,getOneAlgorithm(i));
+//        }
+//        return ret;
+//    }
 
 }

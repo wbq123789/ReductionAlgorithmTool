@@ -114,19 +114,20 @@ public class TSR_ACAAlgorithm {
             for (int m = 0; m < ant_num; m++) {
                 ants.add(new Ant());
             }
-            // 创建一个固定大小的线程池，根据CPU核心数调整线程池大小，减少线程频繁切换导致的效率问题
-            ExecutorService pool = Executors.newFixedThreadPool(8);
-
-            for (Ant ant : ants) {// 遍历 ants 集合
-                Runnable task = ant::run; // 创建一个Runnable任务，封装ant的run方法
-                pool.execute(task);// 将任务提交给线程池
-            }
-            pool.shutdown();// 关闭线程池
-            while (true) {// 等待所有任务完成
-                if (pool.isTerminated()) {
-                    break;
-                }
-            }
+            ants.parallelStream().forEach(Ant::run);//并行流
+//            // 创建一个固定大小的线程池，根据CPU核心数调整线程池大小，减少线程频繁切换导致的效率问题
+//            ExecutorService pool = Executors.newFixedThreadPool(8);
+//
+//            for (Ant ant : ants) {// 遍历 ants 集合
+//                Runnable task = ant::run; // 创建一个Runnable任务，封装ant的run方法
+//                pool.execute(task);// 将任务提交给线程池
+//            }
+//            pool.shutdown();// 关闭线程池
+//            while (true) {// 等待所有任务完成
+//                if (pool.isTerminated()) {
+//                    break;
+//                }
+//            }
             if (generation>0)
                 previousSolution=currentSolution.clone();
             for (Ant ant : ants) {//更新最优解和最优适应度

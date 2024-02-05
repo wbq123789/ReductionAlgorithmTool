@@ -11,53 +11,62 @@ import java.util.Map;
  * @create: 2024-01-31 14:44
  */
 public class CoordinateTransform{
-    Map<Integer,int[]> Return;
-    public CoordinateTransform(Map<Integer,double[]> result){
-        Return=new HashMap<>();
-        result.forEach((i,ret)->{
-            int[] Ret=new int[ret.length];
-            double[] copy = Arrays.copyOf(ret, ret.length);
-            Arrays.sort(copy);
-            double Max=copy[copy.length-1];
-            for (int i1 = 0; i1 < ret.length; i1++) {
-                Ret[i1]=(int)((ret[i1]/Max)*100);
-            }
-            Return.put(i,Ret);
-        });
-    }
+    Map<Integer,double[]> Return;
     public CoordinateTransform(Map<Integer,Map<Integer,double[]>> result,int mode,Matrix matrix){
         Return=new HashMap<>();
+        Map<Integer, Integer> Cost_All = matrix.All_Cost();
+        Map<Integer, Integer> Error_All = matrix.All_Error();
+        Map<Integer, int[]> caseCost = matrix.Case_Cost;
         Map<Integer,double[]> mid=new HashMap<>();
-        result.forEach((i,Ret)-> {
-            if (mode!=1)
-                mid.put(i, Ret.get(mode));
-            else{
-
-                double[] doubles = Ret.get(mode).clone();
-                for (int i1 = 0; i1 < doubles.length; i1++) {
-                    int length = matrix.Case_Cost.get(i1).length;
-                    doubles[i1] /=length;//把个数转化为百分比
-                }
-                mid.put(i,doubles);
-            }
-        });
         final double[] Max = {0};
-        mid.forEach((i,Ret)->{
-            double[] copy = Arrays.copyOf(Ret, Ret.length);
+        result.forEach((i,Ret)->{
+            double[] ret=Ret.get(4);
+            double[] copy = Arrays.copyOf(ret, ret.length);
             Arrays.sort(copy);
             if (Max[0]<copy[copy.length-1])
                 Max[0] =copy[copy.length-1];
         });
-        mid.forEach((i,Ret)->{
-            int[] ret=new int[Ret.length];
-            for (int i1 = 0; i1 < Ret.length; i1++) {
-                ret[i1]=(int)((Ret[i1]/Max[0])*1000);
+        result.forEach((i,Ret)-> {
+            switch (mode){
+                case 1:
+                    double[] double_1 = Ret.get(mode).clone();
+                    for (int i1 = 0; i1 < double_1.length; i1++) {
+                        int length = caseCost.get(i1).length;
+                        double_1[i1] /=length;//把个数转化为百分比
+                        double_1[i1]=1-double_1[i1];
+                    }
+                    mid.put(i,double_1);
+                    break;
+                case 2:
+                    double[] double_2 = Ret.get(mode).clone();
+                    for (int i1 = 0; i1 < double_2.length; i1++) {
+                        int All= Cost_All.get(i1);
+                        double_2[i1] /=All;//把个数转化为百分比
+                        double_2[i1]=1-double_2[i1];
+                    }
+                    mid.put(i,double_2);
+                    break;
+                case 3:
+                    double[] double_3 = Ret.get(mode).clone();
+                    for (int i1 = 0; i1 < double_3.length; i1++) {
+                        int All= Error_All.get(i1);
+                        double_3[i1] /=All;//把个数转化为百分比
+                        double_3[i1]=1-double_3[i1];
+                    }
+                    mid.put(i,double_3);
+                    break;
+                case 4:
+                    double[] double_4 = Ret.get(mode).clone();
+                    for (int i1 = 0; i1 < double_4.length; i1++) {
+                        double_4[i1] /= Max[0];//把个数转化为百分比
+                    }
+                    mid.put(i,double_4);
+                    break;
             }
-            Return.put(i,ret);
         });
+        Return=mid;
     }
-
-    public Map<Integer, int[]> getReturn() {
+    public Map<Integer, double[]> getReturn() {
         return Return;
     }
 }

@@ -9,7 +9,9 @@ public class Matrix {
     public Map<Integer,int[]> Cost;//各测试需求的测试运行代价
     public Map<Integer,int[]> Case_Cost;//各测试用例集测试运行代价
     public Map<Integer,int[]> Error_Detection;//各测试用例的错误检测能力
+    Random r;
     public Matrix(ArrayList<Integer>M_T,ArrayList<Integer> M_R) {
+        r=new Random();
         Matrix=new HashMap<>();
         Cost=new HashMap<>();
         Case_Cost=new HashMap<>();
@@ -18,22 +20,29 @@ public class Matrix {
         for (int I = 0; I < 5; I++) {
             int Case=M_T.get(I);//测试用例数
             int Need= M_R.get(I);//测试需求数
+            int X;
+            if (Need>100)
+                X=Need/10;
+            else if(Need>10)
+                X=Need/5;
+            else
+                X=1;
             if (Case>0&&Need>0) {
-                Random r = new Random();
-                int[][] matrix = new int[Case][Need];//测试用例集&测试需求集矩阵
-                for (int i = 0; i < Need; i++) {
-                    int need_number = 0;
-                    for (int j = 0; j < Case; j++) {
-                        int req = (int) (Math.random() * 2);//随机生成0/1
-                        if (req == 1)
-                            need_number++;
-                        matrix[j][i] = req;
-                    }
-                    if (need_number == 0) { //保证每个测试需求一定会被一个或多个测试用例满足
-                        int index = (int) (Math.random() * Case);
-                        matrix[index][i] = 1;
-                    }
-                }
+//                int[][] matrix = new int[Case][Need];//测试用例集&测试需求集矩阵
+//                for (int i = 0; i < Need; i++) {
+//                    int need_number = 0;
+//                    for (int j = 0; j < Case; j++) {
+//                        int req = (int) (Math.random() * 2);//随机生成0/1
+//                        if (req == 1)
+//                            need_number++;
+//                        matrix[j][i] = req;
+//                    }
+//                    if (need_number == 0) { //保证每个测试需求一定会被一个或多个测试用例满足
+//                        int index = (int) (Math.random() * Case);
+//                        matrix[index][i] = 1;
+//                    }
+//                }
+                int[][] matrix=generateMatrix(Case,Need,X);
                 int[] cost = new int[Need];//各测试需求的测试运行代价,[1,10]随机值
                 int[] case_Cost = new int[Case];//各测试用例集测试运行代价
                 int[] Error = new int[]{2, 4, 8, 10};//错误等级
@@ -121,6 +130,42 @@ public class Matrix {
         }
     }
     public Matrix(){}
+
+    public int[][] generateMatrix(int m, int n, int x) {// 生成一个m行n列的矩阵，每行元素只能为0或1，每行1的数量不大于x，每列至少有一个1
+        // 创建一个m行n列的二维数组
+        int[][] matrix = new int[m][n];
+        // 创建一个随机数生成器
+        Random random = r;
+        // 遍历每一行
+        for (int i = 0; i < m; i++) {
+            // 随机生成该行1的数量，范围是[1, x]
+            int ones = random.nextInt(x) + 1;
+            // 随机生成该行1的位置，存入一个集合中
+            Set<Integer> positions = new HashSet<>();
+            while (positions.size() < ones) {
+                positions.add(random.nextInt(n));
+            }
+            // 根据集合中的位置，将该行对应的元素设为1
+            for (int pos : positions) {
+                matrix[i][pos] = 1;
+            }
+        }
+        // 遍历每一列
+        for (int j = 0; j < n; j++) {
+            // 统计该列1的数量
+            int count = 0;
+            for (int i = 0; i < m; i++) {
+                count += matrix[i][j];
+            }
+            // 如果该列没有1，随机选择一行，将该位置设为1
+            if (count == 0) {
+                int row = random.nextInt(m);
+                matrix[row][j] = 1;
+            }
+        }
+        // 返回生成的矩阵
+        return matrix;
+    }
     public boolean init(String text,int number){
         this.Matrix=new HashMap<>();
         this.Cost=new HashMap<>();

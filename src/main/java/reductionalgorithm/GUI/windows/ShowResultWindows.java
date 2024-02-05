@@ -4,7 +4,6 @@ import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.entity.Result;
 import reductionalgorithm.GUI.enums.CloseAction;
 import reductionalgorithm.GUI.service.MainService;
-import reductionalgorithm.GUI.service.ResultService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

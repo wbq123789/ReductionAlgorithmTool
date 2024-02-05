@@ -1,12 +1,13 @@
 package reductionalgorithm.GUI.windows;
 
 import org.jdesktop.swingx.VerticalLayout;
+import reductionalgorithm.GUI.custom.BackgroundMenuBar;
 import reductionalgorithm.GUI.entity.Config;
 import reductionalgorithm.GUI.entity.CoordinateTransform;
 import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.entity.Result;
 import reductionalgorithm.GUI.enums.CloseAction;
-import reductionalgorithm.GUI.panel.ResultPanel;
+import reductionalgorithm.GUI.custom.ResultPanel;
 import reductionalgorithm.GUI.service.MainService;
 
 import javax.swing.*;
@@ -30,7 +31,7 @@ public class MainWindows extends AbstractWindow<MainService>{
     Map<Integer,double[]> ret_TSR_GAA;
     Map<Integer,double[]> ret_RTSR_HGS;
     public MainWindows() {
-        super("测试用例约简和性能分析",new Dimension(1000,700),true,MainService.class);
+        super("测试用例约简和性能分析工具",new Dimension(1000,750),true,MainService.class);
         this.setDefaultCloseAction(CloseAction.DISPOSE);//设定窗口关闭行为为直接退出程序
         //初始化变量
         this.Matrix=null;
@@ -82,9 +83,10 @@ public class MainWindows extends AbstractWindow<MainService>{
     @Override
     protected void initWindowContent() {
         this.setResizable(false);
-        this.setLayout(new BorderLayout(0,0));
+        this.setLayout(new BorderLayout());
         this.setFont(new Font("宋体", Font.PLAIN, 18));//设定全局字体
-        this.addComponent("Main.MenuBar",new JMenuBar(),BorderLayout.NORTH,menuBar->{//菜单栏
+        this.addComponent("Main.MenuBar",new BackgroundMenuBar(),BorderLayout.NORTH, menuBar->{//菜单栏
+            menuBar.setColor(new Color(6, 76, 110));
             this.addComponent(menuBar,"Main.MenuBar.MatrixMenu",new JMenu("矩阵设置"),menu->{
                 this.addComponent(menu,"Main.MatrixMenu.ChangeMatrix",new JMenuItem("调整矩阵参数"),
                         menuItem -> menuItem.addActionListener(e -> {
@@ -123,7 +125,7 @@ public class MainWindows extends AbstractWindow<MainService>{
         });
         this.addComponent("Main.TablePanel",new JTabbedPane(),BorderLayout.CENTER, TabbedPanel->{//算法展示区
             TabbedPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-            this.addComponent(TabbedPanel,"Main.OneAlgorithm",new JPanel(new BorderLayout()),panel -> {//查看各个算法运行结果
+            this.addComponent(TabbedPanel,"Main.OneAlgorithm",new JPanel(new BorderLayout(0,0)),panel -> {//查看各个算法运行结果
                 panel.setName("查看各个算法运行结果");
                 this.addComponent(panel,"Main.OneAlgorithm.ShowPanel",new JPanel(new BorderLayout()),BorderLayout.CENTER,SPanel-> {
                     SPanel.setPreferredSize(null);
@@ -136,6 +138,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                     });
                 });
                 this.addComponent(panel,"Main.OneAlgorithm.ButtonPanel",new JPanel(new VerticalLayout(25)),BorderLayout.EAST, BPanel->{
+                    BPanel.setBorder(new EmptyBorder(30,15,0,15));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.GButton",new JButton("G算法"),Button-> Button.addActionListener(e->{
                         if (isInput) {
                             if (ret_G==null) {
@@ -225,11 +228,12 @@ public class MainWindows extends AbstractWindow<MainService>{
                     }));
                 });
             });
-            this.addComponent(TabbedPanel,"Main.AllAlgorithm",new JPanel(new BorderLayout()),panel -> {//所有算法运行结果比较
+            this.addComponent(TabbedPanel,"Main.AllAlgorithm",new JPanel(new BorderLayout(0,0)),panel -> {//所有算法运行结果比较
                 panel.setName("所有算法运行结果比较");
                 this.addComponent(panel,"Main.AllAlgorithm.ShowPanel",new JPanel(new BorderLayout()),BorderLayout.CENTER,SPanel-> this.addComponent(SPanel, "Main.AllAlgorithm.ShowPanel.Show",(resultPanel_All=new ResultPanel()),BorderLayout.CENTER, ShowPanel -> ShowPanel.setPreferredSize(SPanel.getSize())));
                 this.addComponent(panel,"Main.AllAlgorithm.ButtonPanel",new JPanel(new VerticalLayout(25)),BorderLayout.EAST, BPanel->{
-                    this.addComponent(BPanel,"Main.AllAlgorithm.ButtonPanel.reductionButton",new JButton("测试用例集约简情况"),button-> button.addActionListener(e -> {
+                    BPanel.setBorder(new EmptyBorder(30,15,0,15));
+                    this.addComponent(BPanel,"Main.AllAlgorithm.ButtonPanel.reductionButton",new JButton("规模约简率"),button-> button.addActionListener(e -> {
                         if (isInput) {
                             if (ret_ALL==null) {
                                 JOptionPane.showMessageDialog(this, "所有算法运行中，请稍后");
@@ -245,7 +249,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                         else
                             JOptionPane.showMessageDialog(this, "请先输入数据！");
                     }));
-                    this.addComponent(BPanel,"Main.AllAlgorithm.ButtonPanel.costButton",new JButton("测试运行代价"),button-> button.addActionListener(e -> {
+                    this.addComponent(BPanel,"Main.AllAlgorithm.ButtonPanel.costButton",new JButton("运行代价约简率"),button-> button.addActionListener(e -> {
                         if (isInput) {
                             if (ret_ALL==null) {
                                 JOptionPane.showMessageDialog(this, "所有算法运行中，请稍后");
@@ -261,7 +265,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                         else
                             JOptionPane.showMessageDialog(this, "请先输入数据！");
                     }));
-                    this.addComponent(BPanel,"Main.AllAlgorithm.ButtonPanel.error_detectionButton",new JButton("错误检测能力"),button-> button.addActionListener(e -> {
+                    this.addComponent(BPanel,"Main.AllAlgorithm.ButtonPanel.error_detectionButton",new JButton("错误检测能力丢失率"),button-> button.addActionListener(e -> {
                         if (isInput) {
                             if (ret_ALL==null) {
                                 JOptionPane.showMessageDialog(this, "所有算法运行中，请稍后");
@@ -296,7 +300,8 @@ public class MainWindows extends AbstractWindow<MainService>{
                 });
             });
         });
-        this.addComponent("Main.Exit",new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0)),BorderLayout.SOUTH,exit->{//退出系统
+        this.addComponent("Main.Exit",new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)),BorderLayout.SOUTH,exit->{//退出系统
+            exit.setBorder(new EmptyBorder(20,0,20,0));
             this.addComponent(exit,"Main.Matrix",new JButton("输入数据"),button->{
                 button.setPreferredSize(new Dimension(90, 25));
                 button.addActionListener(e ->service.Matrix(this));

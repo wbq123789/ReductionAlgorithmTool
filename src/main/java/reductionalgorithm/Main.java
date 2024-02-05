@@ -1,6 +1,6 @@
 package reductionalgorithm;
 
-import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import reductionalgorithm.GUI.windows.MainWindows;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new FlatArcIJTheme());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
             //}//设置窗口UI风格
