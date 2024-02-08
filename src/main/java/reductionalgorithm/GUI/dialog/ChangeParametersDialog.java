@@ -1,6 +1,13 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:ChangeParametersDialog.java
+ * Date:2024/1/31 下午5:34
+ * Author:王贝强
+ */
+
 package reductionalgorithm.GUI.dialog;
 
-import reductionalgorithm.GUI.entity.Config;
+import reductionalgorithm.GUI.entity.ACAAlgorithmConfig;
 import reductionalgorithm.GUI.windows.MainWindows;
 
 import javax.swing.*;
@@ -8,9 +15,14 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+* @Description: 更改蚁群类算法参数窗口
+* @Author: 王贝强
+* @Date: 2024/1/31
+*/
 public class ChangeParametersDialog extends AbstractDialog{
-    private Config config;
-    private MainWindows parentWindow;//暂时存一下父窗口,方便更改算法参数
+    private final ACAAlgorithmConfig config;
+    private final MainWindows parentWindow;//暂时存一下父窗口,方便更改算法参数
     private JTextField ACA1;//T
     private JTextField ACA2;//α
     private JTextField ACA3;//β
@@ -28,37 +40,39 @@ public class ChangeParametersDialog extends AbstractDialog{
     private JTextField TSR_GAA4;//ER_GAA
     private JTextField TSR_GAA5;//PC
     private JTextField TSR_GAA6;//PM
-    public ChangeParametersDialog(MainWindows parent,Config config) {
+    public ChangeParametersDialog(MainWindows parent, ACAAlgorithmConfig config) {
         super(parent, "算法参数",new Dimension(450,500));
-        this.config=config;
+        this.config = config;
         this.parentWindow=parent;
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                 ACA1.setText(String.valueOf(config.ACA1));//T
-                 ACA2.setText(String.valueOf(config.ACA2));//α
-                 ACA3.setText(String.valueOf(config.ACA3));//β
-                 ACA4.setText(String.valueOf(config.ACA4));//ρ
-                 ACA5.setText(String.valueOf(config.ACA5));//Q
+                 ACA1.setText(String.valueOf(config.ACA_T));//T
+                 ACA2.setText(String.valueOf(config.ACA_ALPHA));//α
+                 ACA3.setText(String.valueOf(config.ACA_BETA));//β
+                 ACA4.setText(String.valueOf(config.ACA_RHO));//ρ
+                 ACA5.setText(String.valueOf(config.ACA_Q));//Q
 
-                 TSR_ACA1.setText(String.valueOf(config.TSR_ACA1));//T
-                 TSR_ACA2.setText(String.valueOf(config.TSR_ACA2));//α
-                 TSR_ACA3.setText(String.valueOf(config.TSR_ACA3));//β
-                 TSR_ACA4.setText(String.valueOf(config.TSR_ACA4));//ρ
-                 TSR_ACA5.setText(String.valueOf(config.TSR_ACA5));//Q
-                 TSR_ACA6.setText(String.valueOf(config.TSR_ACA6));//mut
+                 TSR_ACA1.setText(String.valueOf(config.TSR_ACA_T));//T
+                 TSR_ACA2.setText(String.valueOf(config.TSR_ACA_ALPHA));//α
+                 TSR_ACA3.setText(String.valueOf(config.TSR_ACA_BETA));//β
+                 TSR_ACA4.setText(String.valueOf(config.TSR_ACA_RHO));//ρ
+                 TSR_ACA5.setText(String.valueOf(config.TSR_ACA_Q));//Q
+                 TSR_ACA6.setText(String.valueOf(config.TSR_ACA_Mut));//mut
 
-                 TSR_GAA1.setText(String.valueOf(config.TSR_GAA1));//ER_ACA
-                 TSR_GAA2.setText(String.valueOf(config.TSR_GAA2));//Min_T
-                 TSR_GAA3.setText(String.valueOf(config.TSR_GAA3));//Max_T
-                 TSR_GAA4.setText(String.valueOf(config.TSR_GAA4));//ER_GAA
-                 TSR_GAA5.setText(String.valueOf(config.TSR_GAA5));//PC
-                 TSR_GAA6.setText(String.valueOf(config.TSR_GAA6));//PM
+                 TSR_GAA1.setText(String.valueOf(config.ER_ACA));//ER_ACA
+                 TSR_GAA2.setText(String.valueOf(config.TSR_GAA_Min_T));//Min_T
+                 TSR_GAA3.setText(String.valueOf(config.TSR_GAA_Max_T));//Max_T
+                 TSR_GAA4.setText(String.valueOf(config.ER_GAA));//ER_GAA
+                 TSR_GAA5.setText(String.valueOf(config.TSR_GAA_PC));//PC
+                 TSR_GAA6.setText(String.valueOf(config.TSR_GAA_PM));//PM
                 super.windowOpened(e);
             }
         });
     }
-
+    /**
+    * @Description: 初始化对话框内容:设置各个参数的输入框
+    */
     @Override
     protected void initDialogContent() {
         this.setResizable(true);
@@ -144,26 +158,26 @@ public class ChangeParametersDialog extends AbstractDialog{
                         return;
                     }
                 }
-                   config.ACA1=ACA1_;
-                   config.ACA2=ACA2_;
-                   config.ACA3=ACA3_;
-                   config.ACA4=ACA4_;
-                   config.ACA5=ACA5_;
-                   config.TSR_ACA1=TSR_ACA1_;
-                   config.TSR_ACA2=TSR_ACA2_;
-                   config.TSR_ACA3=TSR_ACA3_;
-                   config.TSR_ACA4=TSR_ACA4_;
-                   config.TSR_ACA5=TSR_ACA5_;
-                   config.TSR_ACA6=TSR_ACA6_;
-                   config.TSR_GAA1=TSR_GAA1_;
-                   config.TSR_GAA2=TSR_GAA2_;
-                   config.TSR_GAA3=TSR_GAA3_;
-                   config.TSR_GAA4=TSR_GAA4_;
-                   config.TSR_GAA5=TSR_GAA5_;
-                   config.TSR_GAA6=TSR_GAA6_;
-                   parentWindow.config=config;
+                   config.ACA_T =ACA1_;
+                   config.ACA_ALPHA =ACA2_;
+                   config.ACA_BETA =ACA3_;
+                   config.ACA_RHO =ACA4_;
+                   config.ACA_Q =ACA5_;
+                   config.TSR_ACA_T =TSR_ACA1_;
+                   config.TSR_ACA_ALPHA =TSR_ACA2_;
+                   config.TSR_ACA_BETA =TSR_ACA3_;
+                   config.TSR_ACA_RHO =TSR_ACA4_;
+                   config.TSR_ACA_Q =TSR_ACA5_;
+                   config.TSR_ACA_Mut =TSR_ACA6_;
+                   config.ER_ACA =TSR_GAA1_;
+                   config.TSR_GAA_Min_T =TSR_GAA2_;
+                   config.TSR_GAA_Max_T =TSR_GAA3_;
+                   config.ER_GAA =TSR_GAA4_;
+                   config.TSR_GAA_PC =TSR_GAA5_;
+                   config.TSR_GAA_PM =TSR_GAA6_;
+                   parentWindow.ACAAlgorithmConfig = config;
                    if (parentWindow.isInput) {
-                       parentWindow.Clean();
+                       parentWindow.Clean();//清除以前的运算结果
                        parentWindow.Compute();//重新运算结果
                    }
                    JOptionPane.showMessageDialog(this, "参数更改成功！");

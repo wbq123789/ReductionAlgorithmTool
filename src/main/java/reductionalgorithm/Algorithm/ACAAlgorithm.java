@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:ACAAlgorithm.java
+ * Date:2024/1/18 上午9:21
+ * Author:王贝强
+ */
+
 package reductionalgorithm.Algorithm;
 
 import java.util.*;
@@ -6,7 +13,7 @@ import java.util.*;
  * @program: ReductionAlgorithm
  * @description: ACA（基本蚁群算法） 轨迹更新方式：ant_cycle_system
  * @author: 王贝强
- * @create: 2024-01-18 09:21
+ * @create: 2024-01-18
  */
 public class ACAAlgorithm {
     private static int T;//迭代的次数
@@ -14,18 +21,27 @@ public class ACAAlgorithm {
     private static double BETA;//测试覆盖率的重要程度
     private static double RHO;//信息素的挥发系数
     private static double Q;//信息素的增加常数
-    private int Case;//测试用例的数量
-    private int Need;//测试需求的数量
+    private final int Case;//测试用例的数量
+    private final int Need;//测试需求的数量
 
-    private int ant_num;//蚂蚁的数量
-    private double[][] pheromone; //信息素矩阵
-    private int[][] matrix;//测试用例集_测试需求集矩阵
-    private int[] Case_Cost;//每个测试用例集的总测试代价
-    private int[] coverage; //测试覆盖率数组
+    private final int ant_num;//蚂蚁的数量
+    private final double[][] pheromone; //信息素矩阵
+    private final int[][] matrix;//测试用例集_测试需求集矩阵
+    private final int[] Case_Cost;//每个测试用例集的总测试代价
+    private final int[] coverage; //测试覆盖率数组
     private int[] bestSolution; //最优解
     private int bestFitness; //最优适应度，即当前最优解中全部测试代价总和
-    private Random random; //随机数生成器
-
+    private final Random random; //随机数生成器
+    /**
+     * 构造方法，初始化ACA算法
+     * @param matrix 测试用例集_测试需求集矩阵
+     * @param Case_Cost 每个测试用例集的总测试代价
+     * @param T 迭代的次数
+     * @param ALPHA 信息素的重要程度
+     * @param BETA 测试覆盖率的重要程度
+     * @param RHO 信息素的挥发系数
+     * @param Q 信息素的增加常数
+     */
     public ACAAlgorithm(int[][] matrix, int[] Case_Cost,int T,double ALPHA,double BETA,double RHO,double Q) {
         ACAAlgorithm.T =T;
         ACAAlgorithm.ALPHA =ALPHA;
@@ -36,11 +52,11 @@ public class ACAAlgorithm {
         this.Case = matrix.length;//根据测试用例数初始化迭代参数
         this.ant_num = matrix.length;//根据测试需求数初始化蚂蚁数量
         this.pheromone = new double[Case][Case];//根据测试用例数初始化信息素矩阵
-        this.matrix = matrix;
-        this.Case_Cost = Case_Cost;
-        coverage = new int[Case];
+        this.matrix = matrix;//初始化测试用例集_测试需求集矩阵
+        this.Case_Cost = Case_Cost;//初始化测试代价数组
+        coverage = new int[Case];//初始化覆盖度数组
         random = new Random();
-        bestFitness = Integer.MAX_VALUE - 1;
+        bestFitness = Integer.MAX_VALUE - 1;//初始化最优适应度
         for (int i = 0; i < Case; i++) {//初始化信息素矩阵，每条边上的信息素都设为1.0
             Arrays.fill(pheromone[i], 1.0);
         }
@@ -55,7 +71,7 @@ public class ACAAlgorithm {
     }
 
     public Map<Integer, ArrayList<Integer>> run() {//执行ACA算法
-        Map<Integer, ArrayList<Integer>> result = new HashMap<>();
+        Map<Integer, ArrayList<Integer>> result = new HashMap<>();//初始化返回结果
         ArrayList<Integer> res = new ArrayList<>();
         if (Case == 1) {//当测试用例数为1时，直接返回
             res.add(0);
@@ -76,7 +92,6 @@ public class ACAAlgorithm {
             for (int m = 0; m < ant_num; m++) {
                 ants.add(new Ant());
             }
-
             for (Ant ant : ants) {//每只蚂蚁从一个随机的节点出发，构建测试用例子集
                 ant.run();
             }
@@ -95,7 +110,6 @@ public class ACAAlgorithm {
     }
 
     public void updatePheromone(ArrayList<Ant> ants) {//更新信息素
-
         for (int i = 0; i < Case; i++) {
             for (int j = 0; j < Case; j++) {
                 pheromone[i][j] *= (1.0 - RHO);//信息素挥发
@@ -103,16 +117,15 @@ public class ACAAlgorithm {
                     pheromone[i][j] = 1.0;
             }
         }
-
-        for (Ant ant : ants) {//对每个蚂蚁走过的路径
+        for (Ant ant : ants) {//遍历每个蚂蚁
             int[] solution = ant.solution;
             for (int i = 0; i < Case - 1; i++) {
                 if (solution[i] == 1) {
-                    for (int j = i + 1; j < Case; j++) {
+                    for (int j = i + 1; j < Case; j++) {//遍历蚂蚁走过的所有节点
                         if (solution[j] == 1) {
                             pheromone[i][j] += Q / Case_Cost[j];//信息素增加
                             if (pheromone[i][j] > 5.0)
-                                pheromone[i][j] = 5.0;
+                                pheromone[i][j] = 5.0;//信息素上限
                             break;
                         }
                     }
@@ -122,36 +135,35 @@ public class ACAAlgorithm {
     }
 
     public class Ant {
-        private int[] solution;
-        private ArrayList<Integer> surplus_Need;//当前仍未满足需求集
+        private final int[] solution;//解决方案，即测试用例子集
+        private final ArrayList<Integer> surplus_Need;//当前仍未满足需求集
         private int fitness; //适应度，即禁忌表中全部测试代价总和
-        private ArrayList<Integer> tabuList; //禁忌表，即已经访问过的节点
-        private ArrayList<Integer> allowedList; //允许表，即还没有访问过的节点
+        private final ArrayList<Integer> tabuList; //禁忌表，即已经访问过的节点
+        private final ArrayList<Integer> allowedList; //允许表，即还没有访问过的节点
 
         public Ant() {
             //初始化变量
-            solution = new int[Case];
-            fitness = 0;
+            solution = new int[Case];//初始化解决方案数组
+            fitness = 0;//初始化适应度
             tabuList = new ArrayList<>();
             allowedList = new ArrayList<>();
             surplus_Need = new ArrayList<>();
-            for (int i = 0; i < solution.length; i++) {
+            for (int i = 0; i < solution.length; i++) {//根据测试用例数初始化允许表
                 allowedList.add(i);
             }
-            for (int i = 0; i < Need; i++) {
+            for (int i = 0; i < Need; i++) {//根据测试需求数初始化当前仍未满足需求集
                 surplus_Need.add(i);
             }
         }
 
-        public void run() {
+        public void run() {//运行蚁群算法
             this.selectInitialNode();
             while (!this.isCompleted()) {
                 this.selectNextNode();
             }
         }
 
-        public void selectInitialNode() {
-            //随机选择一个节点作为初始节点
+        public void selectInitialNode() {//随机选择一个节点作为初始节点
             int initialNode = random.nextInt(Case);
             //将该节点加入解决方案和禁忌表，从允许表中移除
             solution[initialNode] = 1;
@@ -165,8 +177,7 @@ public class ACAAlgorithm {
             }
         }
 
-        public void selectNextNode() {
-            //计算每个允许节点的选择概率P_ij
+        public void selectNextNode() {//计算每个允许节点的选择概率P_ij
             double[] probability = new double[Case];
             double sum = 0.0;
             for (int i : allowedList) {//(τ_ij^α)*(η_ij^β)   n_ij=1/dj=cov(tj)/cos(tj)
@@ -174,10 +185,9 @@ public class ACAAlgorithm {
                 sum += probability[i];//∑_(s=1)^n (τ_ij^α)*(η_ij^β)
             }
             for (int i : allowedList) {
-                probability[i] /= sum;
+                probability[i] /= sum;//P_ij=(τ_ij^α)*(η_ij^β)/∑_(s=1)^n (τ_ij^α)*(η_ij^β)
             }
-
-            double Max_probability = 0.0;
+            double Max_probability = 0.0;//初始化最大概率
             int nextNode = 0;
             for (int i : allowedList) {//遍历允许表，选择最大概率的节点
                 if (probability[i] > Max_probability) {

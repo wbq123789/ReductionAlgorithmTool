@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:AbstractWindow.java
+ * Date:2024/1/30 下午2:35
+ * Author:王贝强
+ */
+
 package reductionalgorithm.GUI.windows;
 
 import reductionalgorithm.GUI.enums.CloseAction;
@@ -11,16 +18,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/**
- * AbstractWindow 是当前项目中，所有窗口的顶层抽象类，继承自JFrame类。
- * 考虑到窗口功能复杂，所以：
- * - 窗口内只需要编写组件部分，仅包括UI相关内容。
- * - 每个窗口都有一个对应的Service来对各项功能进行具体实现。
- * - 与工具类、管理类这些底层操作相关的，只能由Service来交互。
- * 因此，在编写窗口的时候需要分三层来写,例如：
- * - WelcomeWindow <-> InputService <-> Tools、Manager
- * - MainWindow <-> MainService <-> Tools、Manager
- */
+    /**
+    * @Description: AbstractWindow 是当前项目中，所有窗口的顶层抽象类，继承自JFrame类。
+     * 考虑到窗口功能复杂，所以：
+     * - 窗口内只需要编写组件部分，仅包括UI相关内容。
+     * - 每个窗口都有一个对应的Service来对各项功能进行具体实现。
+     * - 与工具类、管理类这些底层操作相关的，只能由Service来交互。
+     * 因此，在编写窗口的时候需要分三层来写,例如：
+     * - WelcomeWindow <-> InputService <-> Tools、Manager
+     * - MainWindow <-> MainService <-> Tools、Manager
+    * @Author: 王贝强
+    * @Date: 2024/1/30
+    */
 public abstract class AbstractWindow<R extends AbstractService> extends JFrame {
     //窗口的默认关闭行为
     private CloseAction action = CloseAction.DISPOSE;
@@ -64,7 +73,7 @@ public abstract class AbstractWindow<R extends AbstractService> extends JFrame {
             this.service = clazz.getConstructor().newInstance();
             this.service.setWindow(this, componentMap::get);
         } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
+            throw new RuntimeException( "窗口创建失败"+e.fillInStackTrace());
         }
         //构造方法中对窗口的基本内容初始化完成
     }

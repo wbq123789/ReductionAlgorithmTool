@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:RTSR_HGSAlgorithm.java
+ * Date:2024/1/22 下午2:27
+ * Author:王贝强
+ */
+
 package reductionalgorithm.Algorithm;
 
 import java.util.*;
@@ -6,13 +13,20 @@ import java.util.*;
  * @program: ReductionAlgorithm
  * @description: RTSR_HGS算法
  * @author: 王贝强
- * @create: 2024-01-22 14:27
+ * @create: 2024-01-22
  */
 public class RTSR_HGSAlgorithm {
     static ArrayList<Integer> C_Case;//剩余需求数
     static ArrayList<Integer> C_Need;//剩余测试用例数
     static Map<Integer,ArrayList<Integer>> R;//按被满足次数划分测试需求集合
     static ArrayList<Integer> R_index;//R集合的位序
+    /**
+     * RTSR_HGS算法
+     * @param matrix 测试用例集_测试需求集矩阵
+     * @param Case_Cost 每个测试用例集的总测试代价
+     * @param Error_Detection 每个测试用例集的错误检测率
+     * @return 结果集
+     */
     public static ArrayList<Integer> algorithm(int[][] matrix,int[] Case_Cost,int[] Error_Detection) {
         int Case = matrix.length;//测试用例数
         int Need=matrix[0].length;//测试需求数
@@ -55,7 +69,7 @@ public class RTSR_HGSAlgorithm {
             for (Integer j : list) {//ri
                 for (int i = 0; i < Case; i++) {//ti
                     if (matrix[i][j] == 1) {
-                        C_Case.remove((Integer) i);//当R1.index==1时，移除测试用例队列中的对应用例
+                        C_Case.remove((Integer) i);//当R1存在时，移除测试用例队列中的对应用例
                         if (!result.contains(i))
                             result.add(i);
                         break;
@@ -64,7 +78,7 @@ public class RTSR_HGSAlgorithm {
             }
             result.forEach(i -> {
                 for (int j = 0; j < Need; j++) {
-                    if (matrix[i][j] == 1)//当R1.index==1时，移除测试需求队列中的对应需求
+                    if (matrix[i][j] == 1)//当R1存在时，移除测试需求队列中的对应需求
                         C_Need.remove((Integer) j);
                 }
             });

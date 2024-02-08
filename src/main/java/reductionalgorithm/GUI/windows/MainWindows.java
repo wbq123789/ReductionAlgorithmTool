@@ -1,8 +1,15 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:MainWindows.java
+ * Date:2024/1/31 上午9:45
+ * Author:王贝强
+ */
+
 package reductionalgorithm.GUI.windows;
 
 import org.jdesktop.swingx.VerticalLayout;
 import reductionalgorithm.GUI.custom.BackgroundMenuBar;
-import reductionalgorithm.GUI.entity.Config;
+import reductionalgorithm.GUI.entity.ACAAlgorithmConfig;
 import reductionalgorithm.GUI.entity.CoordinateTransform;
 import reductionalgorithm.GUI.entity.Matrix;
 import reductionalgorithm.GUI.entity.Result;
@@ -14,22 +21,26 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Map;
-
+/**
+* @Description: 程序主窗口
+* @Author: 王贝强
+* @Date: 2024/1/31
+*/
 public class MainWindows extends AbstractWindow<MainService>{
     public Matrix Matrix;//输入矩阵
-    public Config config;//算法参数
+    public ACAAlgorithmConfig ACAAlgorithmConfig;//算法参数
     public Result result;//算法运算结果
     public boolean isInput;//是否输入数据
     public boolean tips;//蚁群算法参数提示
-    JTextArea result_One;
-    ResultPanel resultPanel_All;
-    Map<Integer,Map<Integer,double[]>> ret_ALL;
-    Map<Integer,double[]> ret_G;
-    Map<Integer,double[]> ret_HGS;
-    Map<Integer,double[]> ret_ACA;
-    Map<Integer,double[]> ret_TSR_ACA;
-    Map<Integer,double[]> ret_TSR_GAA;
-    Map<Integer,double[]> ret_RTSR_HGS;
+    JTextArea result_One;//显示当前算法结果
+    ResultPanel resultPanel_All;//显示所有算法结果面板（百分比折线图）
+    Map<Integer,Map<Integer,double[]>> ret_ALL;//所有算法运行结果
+    Map<Integer,double[]> ret_G;//G算法运行结果
+    Map<Integer,double[]> ret_HGS;//HGS算法运行结果
+    Map<Integer,double[]> ret_ACA;//ACA算法运行结果
+    Map<Integer,double[]> ret_TSR_ACA;//TSR-ACA算法运行结果
+    Map<Integer,double[]> ret_TSR_GAA;//TSR-GAA算法运行结果
+    Map<Integer,double[]> ret_RTSR_HGS;//RTSR-HGS算法运行结果
     public MainWindows() {
         super("测试用例约简和性能分析工具",new Dimension(1000,750),true,MainService.class);
         this.setDefaultCloseAction(CloseAction.DISPOSE);//设定窗口关闭行为为直接退出程序
@@ -37,16 +48,19 @@ public class MainWindows extends AbstractWindow<MainService>{
         this.Matrix=null;
         this.isInput=false;
         this.tips=true;
-        this.config=new Config();
+        this.ACAAlgorithmConfig =new ACAAlgorithmConfig();
         this.initWindowContent();
         this.result=new Result();
-        result.setConfig(this.config);
+        result.setConfig(this.ACAAlgorithmConfig);
         result.setMatrix(this.Matrix);
     }
-    public void Compute(){
-        result.setConfig(this.config);
+    /**
+     * 根据输入数据及算法参数计算结果
+     */
+    public void Compute(){//根据输入数据及算法参数计算结果
+        result.setConfig(this.ACAAlgorithmConfig);
         result.setMatrix(this.Matrix);
-        Thread compute=new Thread(()->{
+        Thread compute=new Thread(()->{//异步运算，防止界面卡死
             ret_ALL = result.getAllAlgorithm();
             ret_G=ret_ALL.get(1);
             ret_HGS=ret_ALL.get(2);
@@ -57,11 +71,18 @@ public class MainWindows extends AbstractWindow<MainService>{
         });
         compute.start();
     }
-    public void setMatrix(Matrix matrix){
+    /**
+     * @description: 设置当前矩阵输入
+     * @param matrix 矩阵数据
+     */
+    public void setMatrix(Matrix matrix){//设置当前矩阵输入
         this.Matrix=matrix;
         this.isInput=true;
         Compute();
     }
+    /**
+     * 清除之前的算法计算结果
+     */
     public void Clean(){
         result.cleanCase();
         ret_ALL = null;
@@ -72,16 +93,24 @@ public class MainWindows extends AbstractWindow<MainService>{
         ret_TSR_GAA=null;
         ret_RTSR_HGS=null;
     }
+    /**
+     * @description: 判断不同算法是否能够比较
+     */
     public boolean isCanCompare(){
-        return this.Matrix.Matrix.size() <= 1;
+        return this.Matrix.Matrix.size() <= 1;//当矩阵数量小于等于1时，无法进行比较
     }
     @Override
-    protected boolean onClose() {
+    protected boolean onClose() {//窗口默认关闭操作
         return true;
     }
-
+    /**
+     * 初始化窗口组件,主窗口的所有组件初始化都在这里实现，一共分为菜单栏、算法展示区、底部按钮三个部分
+     * 菜单栏：包括矩阵设置和算法设置，分别包含矩阵参数调整、矩阵导出、算法参数调整、查看算法原始结果
+     * 算法展示区：包括查看各个算法运行结果和所有算法运行结果比较
+     * 底部按钮：包括输入数据和退出系统
+     */
     @Override
-    protected void initWindowContent() {
+    protected void initWindowContent() {//窗口组件初始化
         this.setResizable(false);
         this.setLayout(new BorderLayout());
         this.setFont(new Font("宋体", Font.PLAIN, 18));//设定全局字体
@@ -91,12 +120,11 @@ public class MainWindows extends AbstractWindow<MainService>{
                 this.addComponent(menu,"Main.MatrixMenu.ChangeMatrix",new JMenuItem("调整矩阵参数"),
                         menuItem -> menuItem.addActionListener(e -> {
                             if (isInput)
-                                service.changeMatrix(this,Matrix);
+                                service.changeMatrix(Matrix);
                             else
                                 JOptionPane.showMessageDialog(this, "请先输入数据！");
                         }));
-                this.addComponent(menu,"Main.MatrixMenu.ExportMatrix",new JMenuItem("导出矩阵"),
-                        menuItem -> menuItem.addActionListener(e->{
+                this.addComponent(menu,"Main.MatrixMenu.ExportMatrix",new JMenuItem("导出矩阵"), menuItem -> menuItem.addActionListener(e->{
                             if (isInput) {
                                 String exportMatrix = service.exportMatrix(Matrix);
                                 if (exportMatrix==null)
@@ -109,7 +137,7 @@ public class MainWindows extends AbstractWindow<MainService>{
                 }));
             });
             this.addComponent(menuBar,"Main.MenuBar.AlgorithmMenu",new JMenu("算法设置"),menu-> {
-                this.addComponent(menu, "Main.AlgorithmMenu.OneAlgorithmMenu", new JMenuItem("更改蚁群算法参数"), menuItem -> menuItem.addActionListener(e -> service.changeAlgorithmParameters(config)));
+                this.addComponent(menu, "Main.AlgorithmMenu.OneAlgorithmMenu", new JMenuItem("更改蚁群算法参数"), menuItem -> menuItem.addActionListener(e -> service.changeAlgorithmParameters(ACAAlgorithmConfig)));
                 this.addComponent(menu,"Main.AlgorithmMenu.ShowResultMenu",new JMenuItem("查看算法原始结果"),menuItem-> menuItem.addActionListener(e->{
                     if (isInput) {
                         if (ret_G==null) {
@@ -150,7 +178,6 @@ public class MainWindows extends AbstractWindow<MainService>{
                         }
                         else
                             JOptionPane.showMessageDialog(this, "请先输入数据！");
-
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.HGSButton",new JButton("HGS算法"),Button-> Button.addActionListener(e->{
                         if (isInput) {
@@ -163,7 +190,6 @@ public class MainWindows extends AbstractWindow<MainService>{
                         }
                         else
                             JOptionPane.showMessageDialog(this, "请先输入数据！");
-
                     }));
                     this.addComponent(BPanel,"Main.OneAlgorithm.ButtonPanel.ACAButton",new JButton("ACA算法"),Button-> Button.addActionListener(e->{
                         if (isInput) {
@@ -300,13 +326,13 @@ public class MainWindows extends AbstractWindow<MainService>{
                 });
             });
         });
-        this.addComponent("Main.Exit",new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)),BorderLayout.SOUTH,exit->{//退出系统
-            exit.setBorder(new EmptyBorder(20,0,20,0));
-            this.addComponent(exit,"Main.Matrix",new JButton("输入数据"),button->{
+        this.addComponent("Main.BottomButton",new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)),BorderLayout.SOUTH,BottomButton->{//退出系统
+            BottomButton.setBorder(new EmptyBorder(20,0,20,0));
+            this.addComponent(BottomButton,"Main.Matrix",new JButton("输入数据"),button->{
                 button.setPreferredSize(new Dimension(90, 25));
-                button.addActionListener(e ->service.Matrix(this));
+                button.addActionListener(e ->service.inputMatrix());
             });
-            this.addComponent(exit,"Main.Exit.Button",new JButton("退出系统"),button->{
+            this.addComponent(BottomButton,"Main.Exit.Button",new JButton("退出系统"),button->{
                 button.setPreferredSize(new Dimension(90, 25));
                 button.addActionListener(e ->this.closeWindow());
             });

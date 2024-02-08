@@ -1,6 +1,12 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:TSR_GAAAlgorithm.java
+ * Date:2024/1/20 下午5:10
+ * Author:王贝强
+ */
 package reductionalgorithm.Algorithm;
 
-import reductionalgorithm.GUI.entity.Config;
+import reductionalgorithm.GUI.entity.ACAAlgorithmConfig;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -9,7 +15,7 @@ import java.util.*;
  * @program: ReductionAlgorithm
  * @description: TSR_GAA算法(遗传蚁群算法)
  * @author: 王贝强
- * @create: 2024-01-20 17:10
+ * @create: 2024-01-20
  */
 public class TSR_GAAAlgorithm {
     //定义遗传算法的参数
@@ -30,16 +36,21 @@ public class TSR_GAAAlgorithm {
     int generation; //当前代数
     int Cnt=0;//进化率ER未达到5%的次数
     private final Random random;
-    private final Config config;//蚁群算法配置
+    private final ACAAlgorithmConfig ACAAlgorithmConfig;//蚁群算法配置
 
-    //构造方法，初始化遗传算法类
-    public TSR_GAAAlgorithm(int[][] matrix,int[] Case_Cost,Config config) {
-        this.config=config;
-        MIN_GEN=config.TSR_GAA2;
-        MAX_GEN=config.TSR_GAA3;
-        ER=config.TSR_GAA4;
-        PC=config.TSR_GAA5;
-        PM=config.TSR_GAA6;
+    /**
+     * 构造方法，初始化遗传算法类
+     * @param matrix 测试用例集_测试需求集矩阵
+     * @param Case_Cost 每个测试用例集的总测试代价
+     * @param ACAAlgorithmConfig 蚁群算法配置
+     */
+    public TSR_GAAAlgorithm(int[][] matrix, int[] Case_Cost, ACAAlgorithmConfig ACAAlgorithmConfig) {
+        this.ACAAlgorithmConfig = ACAAlgorithmConfig;
+        MIN_GEN= ACAAlgorithmConfig.TSR_GAA_Min_T;
+        MAX_GEN= ACAAlgorithmConfig.TSR_GAA_Max_T;
+        ER= ACAAlgorithmConfig.ER_GAA;
+        PC= ACAAlgorithmConfig.TSR_GAA_PC;
+        PM= ACAAlgorithmConfig.TSR_GAA_PM;
         this.matrix=matrix;
         this.Case_Cost=Case_Cost;
         this.Need = matrix[0].length;//根据测试需求数初始化迭代参数
@@ -99,7 +110,7 @@ public class TSR_GAAAlgorithm {
         }
         return generation > MAX_GEN;
     }
-    public int[] roulette(){//轮盘赌
+    public int[] roulette(){//轮盘赌，根据适应度选择双亲
         int[] ret=new int[2];
         double[] fitness=new double[Need];
         double last=0.0;
@@ -113,21 +124,21 @@ public class TSR_GAAAlgorithm {
         double r_1=random.nextDouble();
         double r_2=random.nextDouble();
         if (r_1==r_2)
-            r_2=(r_1+r_2)%1.0;//确保两个随机数不相同
-        // 遍历数组，累加权重，直到大于或等于随机数，返回对应的元素
-        double acc = 0;
-        int[] cnt=new int[2];
-        for (int i = 0; i < fitness.length; i++) {
+            r_2=(r_1+r_2)%1.0;//确保两个随机数不相同，否则会导致两个双亲相同
+        //轮盘赌选择双亲
+        double acc = 0;//累加权重
+        int[] cnt=new int[2];//计数器，用于判断是否已经选择到双亲
+        for (int i = 0; i < fitness.length; i++) {// 遍历数组，累加权重，直到大于或等于随机数，返回对应的元素
             acc +=fitness[i];
-            if (acc >= r_1 && cnt[0]==0) {
+            if (acc >= r_1 && cnt[0]==0) {//当第一个双亲选择到时，退出循环
                 ret[0]=i;
                 cnt[0]++;
             }
-            if (acc>=r_2 && cnt[0]==0){
+            if (acc>=r_2 && cnt[1]==0){//当第二个双亲选择到时，退出循环
                 ret[1]=i;
                 cnt[1]++;
             }
-            if (cnt[0]==1&&cnt[1]==1)
+            if (cnt[0]==1&&cnt[1]==1)//当两个双亲都选择到时，退出循环
                 break;
         }
         return ret;
@@ -154,12 +165,14 @@ public class TSR_GAAAlgorithm {
         }
     }
     public ArrayList<Integer> run() {
+        //第一部分：遗传算法，用于生成初始种群的信息素矩阵
+
         //初始化种群
-        population.findBestFitnessIndividual();
+        population.findBestFitnessIndividual();//计算种群的适应度
         //循环迭代
-        while (!isTerminated()) {
+        while (!isTerminated()) {//终止条件：达到最大代数或进化率低于5%
             int index=0;
-            Individual[] new_individuals= new Individual[Need];
+            Individual[] new_individuals= new Individual[Need];//新种群，用于存放下一代个体
             for (int i = 1; i < Need; i+=2) {
                 int[] parents = roulette();//轮盘赌根据适应度选择双亲
                 Individual P1=population.individuals[parents[0]].Clone();
@@ -181,7 +194,9 @@ public class TSR_GAAAlgorithm {
             generation++;//种群代数加一
         }
         computePheromone();//计算信息素矩阵
-        TSR_ACAAlgorithm tsr_acaAlgorithm=new TSR_ACAAlgorithm(matrix,Case_Cost,pheromone,config.TSR_ACA2,config.TSR_ACA3,config.TSR_ACA4,config.TSR_ACA5,config.TSR_ACA6,config.TSR_GAA1);
+
+        //第二部分：调用TSR-ACA算法，用于生成最终计算结果
+        TSR_ACAAlgorithm tsr_acaAlgorithm=new TSR_ACAAlgorithm(matrix,Case_Cost,pheromone, ACAAlgorithmConfig.TSR_ACA_ALPHA, ACAAlgorithmConfig.TSR_ACA_BETA, ACAAlgorithmConfig.TSR_ACA_RHO, ACAAlgorithmConfig.TSR_ACA_Q, ACAAlgorithmConfig.TSR_ACA_Mut, ACAAlgorithmConfig.ER_ACA);
         return tsr_acaAlgorithm.run(1).get(0);
     }
     public class Individual implements Comparable<Individual> {//种群个体
@@ -257,16 +272,16 @@ public class TSR_GAAAlgorithm {
 
         //计算种群的适应度
         public void findBestFitnessIndividual() {
-            bestFittest = 0;
-            bestIndex = 0;
+            bestFittest = 0;//初始化最适应个体的适应度
+            bestIndex = 0;//初始化最适应个体的索引
             for (int i = 0; i < Need; i++) {
-                individuals[i].calculateFitness();
-                if (individuals[i].fitness > bestFittest) {
+                individuals[i].calculateFitness();//计算个体的适应度
+                if (individuals[i].fitness > bestFittest) {//更新最适应个体
                     bestFittest = individuals[i].fitness;
                     bestIndex = i;
                 }
             }
-            currentFittest=individuals[bestIndex].Clone();
+            currentFittest=individuals[bestIndex].Clone();//更新当代最适应个体
         }
 
         //获取最适应的个体

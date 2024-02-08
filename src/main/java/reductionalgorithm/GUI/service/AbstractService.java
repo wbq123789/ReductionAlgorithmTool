@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:AbstractService.java
+ * Date:2024/1/30 下午5:42
+ * Author:王贝强
+ */
+
 package reductionalgorithm.GUI.service;
 
 
@@ -7,11 +14,11 @@ import java.awt.*;
 import java.util.function.Function;
 
 /**
- * AbstractService是所有窗口业务层实现的顶层抽象。
- * 这个类只进行各项实际业务处理，不负责UI相关内容，特别要求：
- * - 不能编写任何构造方法
- * 开始享用吧！
- */
+* @Description: AbstractService是所有窗口业务层实现的顶层抽象。
+ * 这个类只进行各项实际业务处理，不负责UI相关内容
+* @Author: 王贝强
+* @Date: 2024/1/30
+*/
 public abstract class AbstractService {
 
     private AbstractWindow<? extends AbstractService> window;

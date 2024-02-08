@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  */
 public class Result {
     Matrix matrix;//矩阵数据输入
-    Config config;//算法参数配置
+    ACAAlgorithmConfig ACAAlgorithmConfig;//算法参数配置
 
     Map<Integer,String> Case;//各个算法在不同规模下得到的约简测试集
 
@@ -27,8 +27,8 @@ public class Result {
         this.matrix = matrix;
     }
 
-    public void setConfig(Config config) {
-        this.config = config;
+    public void setConfig(ACAAlgorithmConfig ACAAlgorithmConfig) {
+        this.ACAAlgorithmConfig = ACAAlgorithmConfig;
     }
 
     public Map<Integer, String> getCase() {
@@ -38,16 +38,20 @@ public class Result {
     public void cleanCase(){
         Case=new HashMap<>();
     }
-
+    /**
+     * @description: 计算某一个算法的运行结果
+     * @param mode 选择的算法：1-贪心算法，2-HGS算法，3-ACA算法，4-TSR_ACA算法，5-TSR_GAA算法，6-RTSR_HGS算法
+     * @return 返回运行结，包括：约简情况，测试运行代价，错误检测能力，算法运行时间
+     */
     public Map<Integer,double[]> getOneAlgorithm(Integer mode){//计算一个算法的运行结果
-        Map<Integer,double[]> result=new HashMap<>();
-        int Len=matrix.Case_Cost.size();
+        Map<Integer,double[]> result=new HashMap<>();//初始化返回值
+        int Len=matrix.Case_Cost.size();//获取矩阵数量
         double[] Reduction=new double[Len];//约简情况(当前剩余测试集个数)
         double[] Cost=new double[Len];//测试运行代价
         double[] Err=new double[Len];//错误检测能力
         double[] Time=new double[Len];//算法运行时间
         StringBuilder s=new StringBuilder();
-        switch (mode){
+        switch (mode){//根据传入参数，选择运行算法类型
             case 1:{
                 for (int i = 0; i <matrix.Matrix.size(); i++) {
                     int G_Cost = 0;//测试运行代价
@@ -58,6 +62,7 @@ public class Result {
                     ArrayList<Integer> greedyList = GreedyAlgorithm.algorithm(matrix.Matrix.get(i));
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
+                    //生成每个算法运算得到的约简后测试集（String）
                     s.append("M").append(i + 1).append(":");
                     for (int i1 = 0; i1 < greedyList.size(); i1++) {
                         G_Cost += Case_Cost[greedyList.get(i1)];
@@ -90,6 +95,7 @@ public class Result {
                     ArrayList<Integer> HGSList = HGSAlgorithm.algorithm(matrix.Matrix.get(i));
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
+                    //生成每个算法运算得到的约简后测试集（String）
                     s.append("M").append(i + 1).append(":");
                     for (int i1 = 0; i1 < HGSList.size(); i1++) {
                         HGS_Cost += Case_Cost[HGSList.get(i1)];
@@ -119,10 +125,11 @@ public class Result {
                 int[] Case_Cost=matrix.Case_Cost.get(i);
                 int[] Error_Detection=matrix.Error_Detection.get(i);
                 long startTime = System.currentTimeMillis();
-                ACAAlgorithm acaAlgorithm = new ACAAlgorithm(matrix.Matrix.get(i), Case_Cost,config.ACA1,config.ACA2,config.ACA3,config.ACA4,config.ACA5);
+                ACAAlgorithm acaAlgorithm = new ACAAlgorithm(matrix.Matrix.get(i), Case_Cost, ACAAlgorithmConfig.ACA_T, ACAAlgorithmConfig.ACA_ALPHA, ACAAlgorithmConfig.ACA_BETA, ACAAlgorithmConfig.ACA_RHO, ACAAlgorithmConfig.ACA_Q);
                 ArrayList<Integer> ACAList = acaAlgorithm.run().get(0);
                 long endTime = System.currentTimeMillis();
                 long elapsedTime = endTime - startTime;//算法运行时间
+                // 生成每个算法运算得到的约简后测试集（String）
                 s.append("M").append(i + 1).append(":");
                 for (int i1 = 0; i1 < ACAList.size(); i1++) {
                     ACA_Cost += Case_Cost[ACAList.get(i1)];
@@ -152,10 +159,11 @@ public class Result {
                     int[] Case_Cost=matrix.Case_Cost.get(i);
                     int[] Error_Detection=matrix.Error_Detection.get(i);
                     long startTime = System.currentTimeMillis();
-                    TSR_ACAAlgorithm tsr_acaAlgorithm = new TSR_ACAAlgorithm(matrix.Matrix.get(i), Case_Cost,config.TSR_ACA1,config.TSR_ACA2,config.TSR_ACA3,config.TSR_ACA4,config.TSR_ACA5,config.TSR_ACA6);
+                    TSR_ACAAlgorithm tsr_acaAlgorithm = new TSR_ACAAlgorithm(matrix.Matrix.get(i), Case_Cost, ACAAlgorithmConfig.TSR_ACA_T, ACAAlgorithmConfig.TSR_ACA_ALPHA, ACAAlgorithmConfig.TSR_ACA_BETA, ACAAlgorithmConfig.TSR_ACA_RHO, ACAAlgorithmConfig.TSR_ACA_Q, ACAAlgorithmConfig.TSR_ACA_Mut);
                     ArrayList<Integer> TSR_ACAList = tsr_acaAlgorithm.run(0).get(0);
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
+                    //生成每个算法运算得到的约简后测试集（String）
                     s.append("M").append(i + 1).append(":");
                     for (int i1 = 0; i1 < TSR_ACAList.size(); i1++) {
                         TSR_ACA_Cost += Case_Cost[TSR_ACAList.get(i1)];
@@ -185,10 +193,11 @@ public class Result {
                     int[] Case_Cost=matrix.Case_Cost.get(i);
                     int[] Error_Detection=matrix.Error_Detection.get(i);
                     long startTime = System.currentTimeMillis();
-                    TSR_GAAAlgorithm tsr_gaaAlgorithm = new TSR_GAAAlgorithm(matrix.Matrix.get(i), Case_Cost,config);
+                    TSR_GAAAlgorithm tsr_gaaAlgorithm = new TSR_GAAAlgorithm(matrix.Matrix.get(i), Case_Cost, ACAAlgorithmConfig);
                     ArrayList<Integer> TSR_GAAList =tsr_gaaAlgorithm.run();
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
+                    //生成每个算法运算得到的约简后测试集（String）
                     s.append("M").append(i + 1).append(":");
                     for (int i1 = 0; i1 < TSR_GAAList.size(); i1++) {
                         TSR_GAA_Cost += Case_Cost[TSR_GAAList.get(i1)];
@@ -221,6 +230,7 @@ public class Result {
                     ArrayList<Integer> RTSR_HGSList = RTSR_HGSAlgorithm.algorithm(matrix.Matrix.get(i),Case_Cost,Error_Detection);
                     long endTime = System.currentTimeMillis();
                     long elapsedTime = endTime - startTime;//算法运行时间
+                    //生成每个算法运算得到的约简后测试集（String）
                     s.append("M").append(i + 1).append(":");
                     for (int i1 = 0; i1 < RTSR_HGSList.size(); i1++) {
                         RTSR_HGS_Cost += Case_Cost[RTSR_HGSList.get(i1)];
@@ -270,20 +280,11 @@ public class Result {
                 ret.put(i+1,results.get(i).get());
             }
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            throw new RuntimeException("算法运行错误:"+e.getMessage());
         } finally {
             //关闭线程池
             exec.shutdown();
         }
         return ret;
     }
-
-//    public Map<Integer,Map<Integer,double[]>> getAllAlgorithm(){//计算所有算法的运行结果
-//        Map<Integer,Map<Integer,double[]>> ret=new HashMap<>();
-//        for (int i = 1; i <= 6; i++) {
-//            ret.put(i,getOneAlgorithm(i));
-//        }
-//        return ret;
-//    }
-
 }

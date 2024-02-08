@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:RandomMatrixMultipleDialog.java
+ * Date:2024/2/1 下午3:21
+ * Author:王贝强
+ */
+
 package reductionalgorithm.GUI.dialog;
 
 import reductionalgorithm.GUI.entity.Matrix;
@@ -6,7 +13,11 @@ import reductionalgorithm.GUI.service.MatrixService;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
+/**
+* @Description: 随机矩阵生成窗口（多矩阵输入）
+* @Author: 王贝强
+* @Date: 2024/2/1
+*/
 public class RandomMatrixMultipleDialog extends AbstractDialog{
     private JTextField M1T;  //矩阵行数
     private JTextField M2T;
@@ -18,9 +29,9 @@ public class RandomMatrixMultipleDialog extends AbstractDialog{
     private JTextField M3R;
     private JTextField M4R;
     private JTextField M5R;
-    private ArrayList<Integer> M_T;//所有矩阵行数
-    private ArrayList<Integer>M_R;//所有矩阵列数
-    private MatrixService matrixService;
+    private ArrayList<Integer> M_T;//所有矩阵行数列表
+    private ArrayList<Integer>M_R;//所有矩阵列数列表
+    private MatrixService matrixService;//引入矩阵运算服务
 
     private final RandomSelectDialog parentDialog; //这里暂时存一下父窗口，后面方便一起关掉
     public RandomMatrixMultipleDialog(RandomSelectDialog parent) {
@@ -28,7 +39,9 @@ public class RandomMatrixMultipleDialog extends AbstractDialog{
         this.parentDialog=parent;
     }
 
-
+    /**
+     * 初始化窗口内容:矩阵行数、列数输入框、确定按钮,并设置相应的监听事件
+     */
     @Override
     protected void initDialogContent() {
         this.setResizable(false);
@@ -89,21 +102,21 @@ public class RandomMatrixMultipleDialog extends AbstractDialog{
                     JOptionPane.showMessageDialog(this, "至少有一个矩阵的参数必须大于0！");
                     return;
                 }
-                M_T=new ArrayList<>();
+                M_T=new ArrayList<>();//初始化行数列表
                 M_T.add(m1t);
                 M_T.add(m2t);
                 M_T.add(m3t);
                 M_T.add(m4t);
                 M_T.add(m5t);
-                M_R=new ArrayList<>();
+                M_R=new ArrayList<>();//初始化列数列表
                 M_R.add(m1r);
                 M_R.add(m2r);
                 M_R.add(m3r);
                 M_R.add(m4r);
                 M_R.add(m5r);
-                matrixService=new MatrixService();
-                Matrix matrix = matrixService.createMatrix(M_T, M_R);
-                ShowDialog showDialog=new ShowDialog(this,this.parentDialog.parentWindows, matrix);
+                matrixService=new MatrixService();//初始化矩阵运算服务
+                Matrix matrix = matrixService.createMatrix(M_T, M_R);//调用服务，随机生成矩阵
+                ShowDialog showDialog=new ShowDialog(this,this.parentDialog.parentWindows, matrix);//显示生成的矩阵内容
                 parentDialog.matrixDialog.closeDialog();
                 parentDialog.closeDialog();
                 showDialog.openDialog();

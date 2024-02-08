@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:AbstractDialog.java
+ * Date:2024/1/30 下午6:50
+ * Author:王贝强
+ */
+
 package reductionalgorithm.GUI.dialog;
 
 import reductionalgorithm.GUI.windows.AbstractWindow;
@@ -9,8 +16,10 @@ import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
 /**
- * 当前项目中所有对话框的顶层抽象类
- */
+* @Description: 当前项目中所有对话框的顶层抽象类
+* @Author: 王贝强
+* @Date: 2024/1/30
+*/
 public abstract class AbstractDialog extends JDialog {
 
     public AbstractDialog(AbstractWindow parent, String title, Dimension size){

@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:HGSAlgorithm.java
+ * Date:2024/1/17 上午8:02
+ * Author:王贝强
+ */
+
 package reductionalgorithm.Algorithm;
 
 import java.util.*;
@@ -6,7 +13,7 @@ import java.util.*;
  * @program: ReductionAlgorithm
  * @description: HGS算法
  * @author: 王贝强
- * @create: 2024-01-17 08:02
+ * @create: 2024-01-17
  */
 public class HGSAlgorithm {
     public static ArrayList<Integer> algorithm(int[][] matrix) {
@@ -33,9 +40,9 @@ public class HGSAlgorithm {
             for (int[] ints : matrix) if (ints[i] == 1) current_Need++;
             boolean ret = r_Need.add(current_Need);//将被i个测试用例满足的测试需求加入R_index集合
             ArrayList<Integer> R_i_Need;
-            if (ret)
+            if (ret)//如果R中没有R[i]，则新建一个R[i]
                 R_i_Need = new ArrayList<>();
-            else
+            else//如果R中有R[i]，则取出R[i]
                 R_i_Need = R_Need.get(current_Need);
             R_i_Need.add(i);//将ri加入被i个测试用例满足的测试需求集合
             R_Need.put(current_Need, R_i_Need);//对于R中的每一项R[i]，有R[i].index=r_Need[i]
@@ -45,33 +52,33 @@ public class HGSAlgorithm {
         for (int i = 0; i < Case; i++) C_Case.add(i);
         for (int i = 0; i < Need; i++) C_Need.add(i);
         int cnt = 0;
-        ArrayList<Integer> Index_R = new ArrayList<>(r_Need);
+        ArrayList<Integer> Index_R = new ArrayList<>(r_Need);//R_index集合，用于对Ri集合的索引排序
         Collections.sort(Index_R);//对Ri集合的索引从小到大排序
-        if (Index_R.get(0) == 1) {
+        if (Index_R.get(0) == 1) {//当R1存在时，直接移除测试用例队列中的对应用例，并将测试用例加入结果集
             ArrayList<Integer> list = R_Need.get(1);
             for (Integer j : list) {//ri
                 for (int i = 0; i < Case; i++) {//ti
                     if (matrix[i][j] == 1) {
-                        C_Case.remove((Integer) i);//当R1.index==1时，移除测试用例队列中的对应用例
+                        C_Case.remove((Integer) i);//移除测试用例队列中的对应用例
                         if (!result.contains(i))
-                            result.add(i);
+                            result.add(i);//将测试用例加入结果集
                         break;
                     }
                 }
             }
             result.forEach(i -> {
                 for (int j = 0; j < Need; j++) {
-                    if (matrix[i][j] == 1)//当R1.index==1时，移除测试需求队列中的对应需求
+                    if (matrix[i][j] == 1)//当R1存在时，移除测试需求队列中的对应需求
                         C_Need.remove((Integer) j);
                 }
             });
             cnt++;
         }
         //part 2:贪心算法计算测试用例
-        while (!C_Need.isEmpty() && cnt < Index_R.size() - 1) {
+        while (!C_Need.isEmpty() && cnt < Index_R.size() - 1) {//循环结束条件：所有测试需求已满足或遍历完所有Ri
             ArrayList<Integer> list = greedy(matrix, C_Case, C_Need, R_Need, Index_R, cnt, Index_R.size());//计算能够满足Ri集合中测试需求的测试集
-            result.addAll(list);
-            cnt++;
+            result.addAll(list);//将测试集加入结果集
+            cnt++;//遍历下一个Ri
         }
         return result;
     }
@@ -90,7 +97,7 @@ public class HGSAlgorithm {
             int Max_index = Max_index(Max_Current, matrix, C_Case, Current_Need);
             int cnt = 1;
             while (Max_Current.size() > 1) {//满足最多的测试需求的测试用例不唯一
-                if (Ri + cnt < R_Max) {
+                if (Ri + cnt < R_Max) {//
                     ArrayList<Integer> recursion_Case = new ArrayList<>(Max_Current);
                     ArrayList<Integer> recursion_Need = new ArrayList<>(R_Need.get(Index_R.get(cnt + Ri)));
                     Max_index = Max_index(Max_Current, matrix, recursion_Case, recursion_Need);
@@ -104,14 +111,14 @@ public class HGSAlgorithm {
                 if (matrix[Max_index][i] == 1) C_Need.remove((Integer) i);
             }
             C_Case.remove((Integer) Max_index); //移除已被选中的测试用例
-            result.add(Max_index);
+            result.add(Max_index);//将测试用例加入结果集
         }
         return result;
     }
 
     private static int Max_index(ArrayList<Integer> Max_Current, int[][] matrix,
                                  ArrayList<Integer> C_Case,
-                                 ArrayList<Integer> C_Need) {//计算当前Ri中最大的ti_index
+                                 ArrayList<Integer> C_Need) {//计算能够满足Ri集合中最多测试需求的测试集
         int Max_num = 0;//最大满足测试需求个数
         int Max_index = 0;//测试用例编号
         for (Integer i : C_Case) {//遍历当前剩余测试用例位序
@@ -119,15 +126,15 @@ public class HGSAlgorithm {
             for (Integer j : C_Need) {//遍历当前的测试需求位序
                 if (matrix[i][j] == 1) current_num++;
             }
-            if (current_num > Max_num) {
+            if (current_num > Max_num) {//更新最大满足测试需求个数
                 Max_num = current_num;
                 Max_index = i;
-                Max_Current.clear();
-                Max_Current.add(i);
+                Max_Current.clear();//清空当前最大满足测试需求集
+                Max_Current.add(i);//将当前测试用例加入最大满足测试需求集
             } else if (current_num == Max_num) {
-                Max_Current.add(i);
+                Max_Current.add(i);//将当前测试用例加入最大满足测试需求集
             }
         }
-        return Max_index;
+        return Max_index;//返回能满足当前Ri中最多测试需求的测试用例的位序
     }
 }

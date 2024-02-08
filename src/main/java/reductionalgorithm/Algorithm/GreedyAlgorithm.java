@@ -1,3 +1,10 @@
+/*
+ * 项目名称:ReductionAlgorithmTool
+ * 文件名称:GreedyAlgorithm.java
+ * Date:2024/1/17 下午11:30
+ * Author:王贝强
+ */
+
 package reductionalgorithm.Algorithm;
 
 import java.util.ArrayList;
@@ -6,7 +13,7 @@ import java.util.ArrayList;
  * @program: ReductionAlgorithm
  * @description: 贪心算法
  * @author: 王贝强
- * @create: 2024-01-17 23:30
+ * @create: 2024-01-17
  */
 public class GreedyAlgorithm {
 
@@ -38,7 +45,7 @@ public class GreedyAlgorithm {
                 for (Integer j : C_Need) {//遍历当前剩余测试需求位序
                     if (matrix[i][j] == 1) current_num++;
                 }
-                if (current_num > Max_num) {
+                if (current_num > Max_num) {//更新最大满足测试需求个数
                     Max_num = current_num;
                     Max_index = i;
                 }
